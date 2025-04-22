@@ -1,0 +1,317 @@
+/* font.css */
+
+/* Pretendard 폰트 등록 */
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-ExtraLight.woff2")
+    format("woff2");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/pretendard/Pretendard-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* SeoulNamsan 폰트 등록 */
+@font-face {
+  font-family: "SeoulNamsan";
+  src: url("../assets/fonts/seoulnamsan/SeoulNamsanL.ttf") format("truetype");
+  font-weight: 300; /* Light */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SeoulNamsan";
+  src: url("../assets/fonts/seoulnamsan/SeoulNamsanM.ttf") format("truetype");
+  font-weight: 500; /* Medium */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SeoulNamsan";
+  src: url("../assets/fonts/seoulnamsan/SeoulNamsanR.ttf") format("truetype");
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SeoulNamsan";
+  src: url("../assets/fonts/seoulnamsan/SeoulNamsanB.ttf") format("truetype");
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SeoulNamsan";
+  src: url("../assets/fonts/seoulnamsan/SeoulNamsanEB.ttf") format("truetype");
+  font-weight: 800; /* ExtraBold */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 타이포그래피 클래스 - Pretendard 사용 */
+.title1 {
+  font-family: "Pretendard", sans-serif;
+  font-size: 24px;
+  font-weight: 700; /* Bold */
+  line-height: 1.2;
+}
+
+.title2 {
+  font-family: "Pretendard", sans-serif;
+  font-size: 20px;
+  font-weight: 700; /* Bold */
+  line-height: 1.3;
+}
+
+.subtitle1 {
+  font-family: "Pretendard", sans-serif;
+  font-size: 20px;
+  font-weight: 700; /* Bold */
+  line-height: 1.3;
+}
+
+.subtitle2 {
+  font-family: "Pretendard", sans-serif;
+  font-size: 18px;
+  font-weight: 600; /* SemiBold */
+  line-height: 1.4;
+}
+
+.body1-bold {
+  font-family: "Pretendard", sans-serif;
+  font-size: 16px;
+  font-weight: 700; /* Bold */
+  line-height: 1.5;
+}
+
+.body1-semibold {
+  font-family: "Pretendard", sans-serif;
+  font-size: 16px;
+  font-weight: 600; /* SemiBold */
+  line-height: 1.5;
+}
+
+.body1 {
+  font-family: "Pretendard", sans-serif;
+  font-size: 16px;
+  font-weight: 400; /* Regular */
+  line-height: 1.5;
+}
+
+.body2-bold {
+  font-family: "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 700; /* Bold */
+  line-height: 1.5;
+}
+
+.body2-semibold {
+  font-family: "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 600; /* SemiBold */
+  line-height: 1.5;
+}
+
+.body2 {
+  font-family: "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 400; /* Regular */
+  line-height: 1.5;
+}
+
+.body3-bold {
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 700; /* Bold */
+  line-height: 1.5;
+}
+
+.body3-semibold {
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 600; /* SemiBold */
+  line-height: 1.5;
+}
+
+.body3 {
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 400; /* Regular */
+  line-height: 1.5;
+}
+
+.caption {
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 400; /* Regular */
+  line-height: 1.5;
+}
+
+/* 타이포그래피 클래스 - SeoulNamsan 사용 (CL, CB, CBL 스타일) */
+.title1-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 24px;
+  font-weight: 800; /* CBL - ExtraBold */
+  line-height: 1.2;
+}
+
+.title2-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 20px;
+  font-weight: 800; /* CBL - ExtraBold */
+  line-height: 1.3;
+}
+
+.subtitle1-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 20px;
+  font-weight: 800; /* CBL - ExtraBold */
+  line-height: 1.3;
+}
+
+.subtitle2-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 18px;
+  font-weight: 700; /* CB - Bold */
+  line-height: 1.4;
+}
+
+.body1-seoul-bold {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 16px;
+  font-weight: 800; /* CBL - ExtraBold */
+  line-height: 1.5;
+}
+
+.body1-seoul-medium {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 16px;
+  font-weight: 700; /* CB - Bold */
+  line-height: 1.5;
+}
+
+.body1-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 16px;
+  font-weight: 300; /* CL - Light */
+  line-height: 1.5;
+}
+
+.body2-seoul-bold {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 14px;
+  font-weight: 800; /* CBL - ExtraBold */
+  line-height: 1.5;
+}
+
+.body2-seoul-medium {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 14px;
+  font-weight: 700; /* CB - Bold */
+  line-height: 1.5;
+}
+
+.body2-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 14px;
+  font-weight: 300; /* CL - Light */
+  line-height: 1.5;
+}
+
+.body3-seoul-bold {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 12px;
+  font-weight: 800; /* CBL - ExtraBold */
+  line-height: 1.5;
+}
+
+.body3-seoul-medium {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 12px;
+  font-weight: 700; /* CB - Bold */
+  line-height: 1.5;
+}
+
+.body3-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 12px;
+  font-weight: 300; /* CL - Light */
+  line-height: 1.5;
+}
+
+.caption-seoul {
+  font-family: "SeoulNamsan", sans-serif;
+  font-size: 12px;
+  font-weight: 300; /* CL - Light */
+  line-height: 1.5;
+}

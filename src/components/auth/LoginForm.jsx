@@ -13,7 +13,7 @@ const LoginForm = ({ onSubmit }) => {
 
   return (
     <div className="login-container">
-      <div className="login-title">LOGIN</div>
+      <div className="login-title subtitle1">LOGIN</div>
       <form className="login-form" onSubmit={handleSubmit}>
         <Input
           type="text"
@@ -27,7 +27,7 @@ const LoginForm = ({ onSubmit }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button className="login-button">로그인</Button>
+        <Button className="login-button body1-bold">로그인</Button>
       </form>
     </div>
   );

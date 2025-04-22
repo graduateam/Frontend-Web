@@ -8,7 +8,7 @@ const Header = () => {
         alt="Circle Logo"
         className="header-logo"
       />
-      <div className="header-title">Smart Road Reflector</div>
+      <div className="header-title title2">Smart Road Reflector</div>
     </header>
   );
 };

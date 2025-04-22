@@ -18,9 +18,9 @@ const LoginPage = () => {
   return (
     <div className="app-container">
       <Header />
-      <div className="subheader">SmartRoadReflector</div>
+      <div className="subheader subtitle1">SmartRoadReflector</div>
       <div className="content">
-        <div className="korean-title">관리자 전용 웹페이지</div>
+        <div className="korean-title title1-seoul">관리자 전용 웹페이지</div>
         <div className="center-logo">
           <img
             src="/src/assets/images/logos/road-intersection.svg"
@@ -28,6 +28,7 @@ const LoginPage = () => {
           />
         </div>
         <LoginForm onSubmit={handleLogin} />
+        <div className="version-tag body1-bold">V1.0</div>
       </div>
     </div>
   );
