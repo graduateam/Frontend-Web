@@ -18,7 +18,7 @@ const LoginPage = () => {
   return (
     <div className="app-container">
       <Header />
-      <div className="subheader subtitle1">SmartRoadReflector</div>
+      <div className="white-title-bar subtitle1">SmartRoadReflector</div>
       <div className="content">
         <div className="korean-title title1-seoul">관리자 전용 웹페이지</div>
         <div className="center-logo">
