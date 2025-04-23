@@ -44,11 +44,11 @@ input {
   display: flex;
   flex-direction: column;
   overflow: visible; /* 컨테이너 바깥으로 나가는 요소 표시 */
-  background-color: var(--primary-color); /* 배경색 추가 */
+  background-color: var(--color-traffic-orange); /* 배경색 추가 */
 }
 
 .header {
-  background-color: var(--primary-color);
+  background-color: var(--color-traffic-orange);
   padding: 24px 20px;
   display: flex;
   align-items: center;
@@ -73,15 +73,27 @@ input {
 }
 
 .white-title-bar {
-  background-color: white;
+  background-color: var(--color-white);
   color: var(--text-color);
   text-align: center;
   padding: 10px;
   font-size: 18px;
   font-weight: bold;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  border-top: 1px solid var(--color-gray-20);
+  border-bottom: 1px solid var(--color-gray-20);
   margin-top: 80px;
+  position: relative;
+}
+
+.white-title-bar::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: var(--color-traffic-orange);
+  z-index: -1;
 }
 
 .content {
@@ -96,7 +108,7 @@ input {
 
 .korean-title {
   text-align: center;
-  color: white;
+  color: var(--color-white);
   font-size: 24px;
   margin-bottom: 40px;
 }
@@ -123,7 +135,7 @@ input {
 }
 
 .login-title {
-  color: white;
+  color: var(--color-white);
   margin-bottom: 15px;
   font-weight: bold;
 }
@@ -139,8 +151,8 @@ input {
 .login-button {
   width: 100%;
   padding: 10px;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--color-traffic-orange);
+  color: var(--color-white);
   border: none;
   border-radius: 4px;
   font-weight: bold;
@@ -150,7 +162,7 @@ input {
   position: absolute;
   bottom: 20px;
   right: 40px;
-  color: white;
+  color: var(--color-white);
   font-size: 40px;
   font-weight: bold;
 }

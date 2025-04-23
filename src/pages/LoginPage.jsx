@@ -16,11 +16,15 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container bg-traffic-orange-d3">
       <Header />
-      <div className="white-title-bar subtitle1">SmartRoadReflector</div>
-      <div className="content">
-        <div className="korean-title title1-seoul">관리자 전용 웹페이지</div>
+      <div className="white-title-bar title1 bg-white text-off-black">
+        SmartRoadReflector
+      </div>
+      <div className="content bg-traffic-orange-d3">
+        <div className="korean-title title1-seoul text-white">
+          관리자 전용 웹페이지
+        </div>
         <div className="center-logo">
           <img
             src="/src/assets/images/logos/road-intersection.svg"
@@ -28,7 +32,7 @@ const LoginPage = () => {
           />
         </div>
         <LoginForm onSubmit={handleLogin} />
-        <div className="version-tag body1-bold">V1.0</div>
+        <div className="version-tag text-white body1-bold">V1.0</div>
       </div>
     </div>
   );

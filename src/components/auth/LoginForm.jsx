@@ -11,23 +11,33 @@ const LoginForm = ({ onSubmit }) => {
     onSubmit({ username, password });
   };
 
+  // Replaced background-color with utility class
+  // Original: background-color: rgba(139, 64, 0, 0.6);
+  const containerStyle = {
+    backgroundColor: "rgba(var(--color-traffic-orange-b1-rgb), 0.6)",
+  };
+
   return (
-    <div className="login-container">
-      <div className="login-title subtitle1">LOGIN</div>
+    <div className="login-container bg-traffic-orange-s1">
+      <div className="login-title text-white">LOGIN</div>
       <form className="login-form" onSubmit={handleSubmit}>
         <Input
           type="text"
           placeholder="아이디"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          variant="default"
         />
         <Input
           type="password"
           placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          variant="default"
         />
-        <Button className="login-button body1-bold">로그인</Button>
+        <Button className="login-button" variant="primary">
+          로그인
+        </Button>
       </form>
     </div>
   );
