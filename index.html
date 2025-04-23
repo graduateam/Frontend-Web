@@ -1,13 +1,79 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/src/assets/images/logos/circle-logo.svg"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="스마트 도로 반사경 관리 시스템 - 교통 안전을 위한 스마트 솔루션"
+    />
+    <meta name="theme-color" content="#e15501" />
+
+    <!-- 렌더링 최적화 -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+
+    <!-- 폰트 프리로드 -->
+    <link
+      rel="preload"
+      href="/src/assets/fonts/pretendard/Pretendard-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/pretendard/Pretendard-Bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/seoulnamsan/SeoulNamsanM.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+
+    <!-- Open Graph / 소셜 미디어 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Smart Road Reflector" />
+    <meta
+      property="og:description"
+      content="교통 안전을 위한 스마트 도로 반사경 관리 시스템"
+    />
+    <meta
+      property="og:image"
+      content="/src/assets/images/logos/road-intersection.svg"
+    />
+
+    <title>Smart Road Reflector | 관리자 시스템</title>
+
+    <!-- 네이버 지도 API -->
+    <script
+      type="text/javascript"
+      src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=xltlxgppv0"
+    ></script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="text-align: center; padding: 20px; font-family: sans-serif">
+        <h2>JavaScript가 비활성화되어 있습니다</h2>
+        <p>
+          Smart Road Reflector 시스템을 사용하려면 JavaScript를 활성화해주세요.
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
