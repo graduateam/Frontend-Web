@@ -167,3 +167,11 @@ input {
   font-size: 40px;
   font-weight: bold;
 }
+
+.logout-button {
+  background-color: var(--color-traffic-orange-s1);
+  color: var(--color-white);
+  /* border: 1px solid #a22f00; */
+  border-radius: 16px;
+  padding: 6px 16px;
+}
