@@ -55,6 +55,7 @@ input {
   color: white;
   position: relative; /* 로고 위치 조정을 위해 추가 */
   overflow: visible; /* 헤더 바깥으로 나가는 로고 표시 */
+  z-index: 5;
 }
 
 .header-logo {
@@ -174,4 +175,18 @@ input {
   /* border: 1px solid #a22f00; */
   border-radius: 16px;
   padding: 6px 16px;
+}
+
+.map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* 지도는 낮은 z-index */
+}
+
+#map {
+  width: 100%;
+  height: 100%;
 }
