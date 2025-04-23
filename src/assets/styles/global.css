@@ -43,36 +43,57 @@ input {
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: visible; /* 컨테이너 바깥으로 나가는 요소 표시 */
+  background-color: var(--color-traffic-orange); /* 배경색 추가 */
 }
 
 .header {
-  background-color: var(--primary-color);
-  padding: 15px 20px;
+  background-color: var(--color-traffic-orange);
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   color: white;
+  position: relative; /* 로고 위치 조정을 위해 추가 */
+  overflow: visible; /* 헤더 바깥으로 나가는 로고 표시 */
 }
 
 .header-logo {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
+  position: absolute; /* 절대 위치로 설정 */
+  top: 8px; /* 로고를 위로 이동 */
+  left: 8px; /* 왼쪽 위치 조정 */
+  z-index: 10; /* 다른 요소 위에 표시되도록 z-index 추가 */
 }
 
 .header-title {
-  margin-left: 15px;
+  margin-left: 100px; /* 로고 크기에 맞게 여백 조정 */
   font-size: 18px;
   font-weight: bold;
 }
 
-.subheader {
-  background-color: white;
+.white-title-bar {
+  background-color: var(--color-white);
   color: var(--text-color);
   text-align: center;
-  padding: 10px;
+  padding: 4px;
   font-size: 18px;
   font-weight: bold;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  border-top: 4px solid var(--color-gray-20);
+  border-bottom: 1px solid var(--color-gray-20);
+  margin-top: 80px;
+  position: relative;
+}
+
+.white-title-bar::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: var(--color-traffic-orange);
+  z-index: -1;
 }
 
 .content {
@@ -87,8 +108,9 @@ input {
 
 .korean-title {
   text-align: center;
-  color: white;
+  color: var(--color-white);
   font-size: 24px;
+  margin-top: -20px;
   margin-bottom: 40px;
 }
 
@@ -114,7 +136,7 @@ input {
 }
 
 .login-title {
-  color: white;
+  color: var(--color-white);
   margin-bottom: 15px;
   font-weight: bold;
 }
@@ -130,8 +152,8 @@ input {
 .login-button {
   width: 100%;
   padding: 10px;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--color-traffic-orange);
+  color: var(--color-white);
   border: none;
   border-radius: 4px;
   font-weight: bold;
@@ -141,7 +163,7 @@ input {
   position: absolute;
   bottom: 20px;
   right: 40px;
-  color: white;
+  color: var(--color-white);
   font-size: 40px;
   font-weight: bold;
 }

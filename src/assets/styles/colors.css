@@ -1,0 +1,298 @@
+/* colors.css - 브랜드 색상 시스템 */
+
+:root {
+  /* 브랜드 기본 색상 */
+  --color-traffic-orange: #e15501;
+
+  /* 앰비언트 색상 - Saturation 변형 */
+  --color-traffic-orange-s1: #c23b00;
+  --color-traffic-orange-s2: #cc4400;
+  --color-traffic-orange-s3: #d74c00;
+
+  /* 앰비언트 색상 - Darkness 변형 */
+  --color-traffic-orange-d1: #eb582f;
+  --color-traffic-orange-d2: #f6661a;
+  --color-traffic-orange-d3: #ff6f23;
+
+  /* 화이트 그라데이션 */
+  --color-traffic-orange-w1: #ed7337;
+  --color-traffic-orange-w2: #f7905e;
+  --color-traffic-orange-w3: #feab85;
+  --color-traffic-orange-w4: #ffc7ac;
+  --color-traffic-orange-w5: #ffe3d5;
+
+  /* 블랙 그라데이션 */
+  --color-traffic-orange-b1: #b94809;
+  --color-traffic-orange-b2: #923b0d;
+  --color-traffic-orange-b3: #6c2e0e;
+  --color-traffic-orange-b4: #49210d;
+  --color-traffic-orange-b5: #291507;
+
+  /* 뉴트럴 색상 */
+  --color-white: #ffffff;
+  --color-gray-10: #f8f8f8;
+  --color-gray-20: #d1d1d1;
+  --color-gray-30: #ababab;
+  --color-gray-40: #656565;
+  --color-gray-50: #4c4c4c;
+  --color-off-black: #1a1a1a;
+  --color-pure-black: #000000;
+
+  /* 기존 프로젝트의 변수명과 매핑 */
+  --primary-color: var(--color-traffic-orange);
+  --secondary-color: var(--color-traffic-orange-b1);
+  --text-color: var(--color-off-black);
+  --background-color: var(--color-white);
+  --border-color: var(--color-gray-20);
+}
+
+/* 색상 클래스 - 배경색 */
+.bg-traffic-orange {
+  background-color: var(--color-traffic-orange);
+}
+.bg-traffic-orange-s1 {
+  background-color: var(--color-traffic-orange-s1);
+}
+.bg-traffic-orange-s2 {
+  background-color: var(--color-traffic-orange-s2);
+}
+.bg-traffic-orange-s3 {
+  background-color: var(--color-traffic-orange-s3);
+}
+.bg-traffic-orange-d1 {
+  background-color: var(--color-traffic-orange-d1);
+}
+.bg-traffic-orange-d2 {
+  background-color: var(--color-traffic-orange-d2);
+}
+.bg-traffic-orange-d3 {
+  background-color: var(--color-traffic-orange-d3);
+}
+.bg-traffic-orange-w1 {
+  background-color: var(--color-traffic-orange-w1);
+}
+.bg-traffic-orange-w2 {
+  background-color: var(--color-traffic-orange-w2);
+}
+.bg-traffic-orange-w3 {
+  background-color: var(--color-traffic-orange-w3);
+}
+.bg-traffic-orange-w4 {
+  background-color: var(--color-traffic-orange-w4);
+}
+.bg-traffic-orange-w5 {
+  background-color: var(--color-traffic-orange-w5);
+}
+.bg-traffic-orange-b1 {
+  background-color: var(--color-traffic-orange-b1);
+}
+.bg-traffic-orange-b2 {
+  background-color: var(--color-traffic-orange-b2);
+}
+.bg-traffic-orange-b3 {
+  background-color: var(--color-traffic-orange-b3);
+}
+.bg-traffic-orange-b4 {
+  background-color: var(--color-traffic-orange-b4);
+}
+.bg-traffic-orange-b5 {
+  background-color: var(--color-traffic-orange-b5);
+}
+.bg-white {
+  background-color: var(--color-white);
+}
+.bg-gray-10 {
+  background-color: var(--color-gray-10);
+}
+.bg-gray-20 {
+  background-color: var(--color-gray-20);
+}
+.bg-gray-30 {
+  background-color: var(--color-gray-30);
+}
+.bg-gray-40 {
+  background-color: var(--color-gray-40);
+}
+.bg-gray-50 {
+  background-color: var(--color-gray-50);
+}
+.bg-off-black {
+  background-color: var(--color-off-black);
+}
+.bg-pure-black {
+  background-color: var(--color-pure-black);
+}
+
+/* 투명도가 적용된 배경색 클래스 */
+.bg-traffic-orange-60 {
+  background-color: rgba(var(--color-traffic-orange-rgb), 0.6);
+}
+.bg-traffic-orange-s1-60 {
+  background-color: rgba(var(--color-traffic-orange-s1-rgb), 0.6);
+}
+.bg-traffic-orange-s2-60 {
+  background-color: rgba(var(--color-traffic-orange-s2-rgb), 0.6);
+}
+.bg-traffic-orange-s3-60 {
+  background-color: rgba(var(--color-traffic-orange-s3-rgb), 0.6);
+}
+.bg-traffic-orange-d1-60 {
+  background-color: rgba(var(--color-traffic-orange-d1-rgb), 0.6);
+}
+.bg-traffic-orange-d2-60 {
+  background-color: rgba(var(--color-traffic-orange-d2-rgb), 0.6);
+}
+.bg-traffic-orange-d3-60 {
+  background-color: rgba(var(--color-traffic-orange-d3-rgb), 0.6);
+}
+.bg-traffic-orange-b1-60 {
+  background-color: rgba(var(--color-traffic-orange-b1-rgb), 0.6);
+}
+.border-white {
+  border-color: var(--color-white);
+}
+.border-gray-10 {
+  border-color: var(--color-gray-10);
+}
+.border-gray-20 {
+  border-color: var(--color-gray-20);
+}
+.border-gray-30 {
+  border-color: var(--color-gray-30);
+}
+.border-gray-40 {
+  border-color: var(--color-gray-40);
+}
+.border-gray-50 {
+  border-color: var(--color-gray-50);
+}
+.border-off-black {
+  border-color: var(--color-off-black);
+}
+.border-pure-black {
+  border-color: var(--color-pure-black);
+}
+
+/* 색상 클래스 - 텍스트 색상 */
+.text-traffic-orange {
+  color: var(--color-traffic-orange);
+}
+.text-traffic-orange-s1 {
+  color: var(--color-traffic-orange-s1);
+}
+.text-traffic-orange-s2 {
+  color: var(--color-traffic-orange-s2);
+}
+.text-traffic-orange-s3 {
+  color: var(--color-traffic-orange-s3);
+}
+.text-traffic-orange-d1 {
+  color: var(--color-traffic-orange-d1);
+}
+.text-traffic-orange-d2 {
+  color: var(--color-traffic-orange-d2);
+}
+.text-traffic-orange-d3 {
+  color: var(--color-traffic-orange-d3);
+}
+.text-traffic-orange-w1 {
+  color: var(--color-traffic-orange-w1);
+}
+.text-traffic-orange-w2 {
+  color: var(--color-traffic-orange-w2);
+}
+.text-traffic-orange-w3 {
+  color: var(--color-traffic-orange-w3);
+}
+.text-traffic-orange-w4 {
+  color: var(--color-traffic-orange-w4);
+}
+.text-traffic-orange-w5 {
+  color: var(--color-traffic-orange-w5);
+}
+.text-traffic-orange-b1 {
+  color: var(--color-traffic-orange-b1);
+}
+.text-traffic-orange-b2 {
+  color: var(--color-traffic-orange-b2);
+}
+.text-traffic-orange-b3 {
+  color: var(--color-traffic-orange-b3);
+}
+.text-traffic-orange-b4 {
+  color: var(--color-traffic-orange-b4);
+}
+.text-traffic-orange-b5 {
+  color: var(--color-traffic-orange-b5);
+}
+.text-white {
+  color: var(--color-white);
+}
+.text-gray-10 {
+  color: var(--color-gray-10);
+}
+.text-gray-20 {
+  color: var(--color-gray-20);
+}
+.text-gray-30 {
+  color: var(--color-gray-30);
+}
+.text-gray-40 {
+  color: var(--color-gray-40);
+}
+.text-gray-50 {
+  color: var(--color-gray-50);
+}
+.text-off-black {
+  color: var(--color-off-black);
+}
+.text-pure-black {
+  color: var(--color-pure-black);
+}
+
+/* 색상 클래스 - 테두리 색상 */
+.border-traffic-orange {
+  border-color: var(--color-traffic-orange);
+}
+.border-traffic-orange-s1 {
+  border-color: var(--color-traffic-orange-s1);
+}
+.border-traffic-orange-s2 {
+  border-color: var(--color-traffic-orange-s2);
+}
+.border-traffic-orange-s3 {
+  border-color: var(--color-traffic-orange-s3);
+}
+.border-traffic-orange-d1 {
+  border-color: var(--color-traffic-orange-d1);
+}
+.border-traffic-orange-d2 {
+  border-color: var(--color-traffic-orange-d2);
+}
+.border-traffic-orange-d3 {
+  border-color: var(--color-traffic-orange-d3);
+}
+.border-white {
+  border-color: var(--color-white);
+}
+.border-gray-10 {
+  border-color: var(--color-gray-10);
+}
+.border-gray-20 {
+  border-color: var(--color-gray-20);
+}
+.border-gray-30 {
+  border-color: var(--color-gray-30);
+}
+.border-gray-40 {
+  border-color: var(--color-gray-40);
+}
+.border-gray-50 {
+  border-color: var(--color-gray-50);
+}
+.border-off-black {
+  border-color: var(--color-off-black);
+}
+.border-pure-black {
+  border-color: var(--color-pure-black);
+}
