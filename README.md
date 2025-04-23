@@ -1,6 +1,6 @@
 # Smart Road Reflector
 
-Smart Road Reflector는 도로 반사경 관리를 위한 관리자 웹 인터페이스입니다. 이 애플리케이션은 React와 현대적인 웹 기술을 사용하여 구축되었습니다.
+Smart Road Reflector는 지능형 교통정보 제공 시스템을 위한 관리자 웹 인터페이스입니다. 이 애플리케이션은 React 및 웹 기술을 사용하여 구축되었습니다.
 
 ## 프로젝트 구조
 
@@ -137,38 +137,41 @@ npm run dev
 프로젝트는 두 가지 주요 폰트를 사용합니다: Pretendard와 SeoulNamsan.
 폰트 정의 및 스타일은 `src/assets/styles/font.css`에 있습니다.
 
-#### 폰트 변수 사용
+#### 폰트 클래스 사용
 
-```css
-.my-element {
-  font-family: var(--font-primary);
-  font-weight: 500;
-  font-size: 16px;
-}
-```
+이 프로젝트는 의미 기반 네이밍 대신 폰트 종류와 크기를 직접 나타내는 명확한 클래스명을 사용합니다.
 
-#### 폰트 유틸리티 클래스 사용
-
-Pretendard (기본 폰트):
+Pretendard:
 
 ```jsx
-<h1 className="title1">24px 볼드 제목</h1>
-<h2 className="title2">20px 볼드 제목</h2>
-<p className="body1">16px 레귤러 본문</p>
-<p className="body1-bold">16px 볼드 본문</p>
-<p className="body1-semibold">16px 세미볼드 본문</p>
-<p className="body3">12px 레귤러 작은 텍스트</p>
+<h1 className="pretendard-24-bold">24px 볼드 제목</h1>
+<h2 className="pretendard-20-bold">20px 볼드 제목</h2>
+<p className="pretendard-16">16px 레귤러 본문</p>
+<p className="pretendard-16-bold">16px 볼드 본문</p>
+<p className="pretendard-16-semibold">16px 세미볼드 본문</p>
+<p className="pretendard-12">12px 레귤러 작은 텍스트</p>
 ```
 
 SeoulNamsan:
 
 ```jsx
-<h1 className="title1-seoul">24px 서울남산 제목</h1>
-<h2 className="subtitle1-seoul">20px 서울남산 부제목</h2>
-<p className="body1-seoul">16px 서울남산 본문</p>
-<p className="body1-seoul-bold">16px 서울남산 볼드 본문</p>
-<p className="body2-seoul">14px 서울남산 본문</p>
+<h1 className="seoul-24-extrabold">24px 서울남산 제목</h1>
+<h2 className="seoul-20-extrabold">20px 서울남산 부제목</h2>
+<p className="seoul-16-light">16px 서울남산 본문</p>
+<p className="seoul-16-extrabold">16px 서울남산 볼드 본문</p>
+<p className="seoul-14-light">14px 서울남산 본문</p>
 ```
+
+#### 네이밍 규칙
+
+폰트 클래스 이름은 다음 형식을 따릅니다:
+`[폰트명]-[크기px]-[두께]`
+
+예:
+
+- `pretendard-16-bold`: Pretendard 폰트, 16px, 볼드(700)
+- `seoul-20-extrabold`: SeoulNamsan 폰트, 20px, 엑스트라볼드(800)
+- `pretendard-14`: Pretendard 폰트, 14px, 레귤러(400) 두께
 
 ### 컴포넌트 사용
 

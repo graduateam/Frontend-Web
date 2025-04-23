@@ -18,11 +18,11 @@ const LoginPage = () => {
   return (
     <div className="app-container bg-traffic-orange-d3">
       <Header />
-      <div className="white-title-bar title1 bg-white text-off-black">
+      <div className="white-title-bar seoul-24-extrabold bg-white text-traffic-orange-b2">
         SmartRoadReflector
       </div>
       <div className="content bg-traffic-orange-d3">
-        <div className="korean-title title1-seoul text-white">
+        <div className="korean-title seoul-24-light text-white">
           관리자 전용 웹페이지
         </div>
         <div className="center-logo">
@@ -32,7 +32,7 @@ const LoginPage = () => {
           />
         </div>
         <LoginForm onSubmit={handleLogin} />
-        <div className="version-tag text-white body1-bold">V1.0</div>
+        <div className="version-tag text-white pretendard-16-bold">V1.0</div>
       </div>
     </div>
   );

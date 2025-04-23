@@ -8,7 +8,7 @@ const Header = () => {
         alt="Circle Logo"
         className="header-logo"
       />
-      <div className="header-title text-white title1-seoul">
+      <div className="header-title text-white seoul-24-extrabold">
         Smart Road Reflector
       </div>
     </header>
