@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { getMapUpdateData } from "../../utils/NaverMapData"; // 예시 데이터 가져오기
 
 const NaverMap = () => {
   const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [mapError, setMapError] = useState(null);
+  const [mapData, setMapData] = useState(null);
 
   useEffect(() => {
     // 이미 스크립트가 로드되었는지 확인
@@ -50,6 +53,7 @@ const NaverMap = () => {
     };
   }, []);
 
+  // 지도 초기화
   useEffect(() => {
     // 스크립트가 로드된 후에만 지도 초기화
     if (isScriptLoaded && window.naver && window.naver.maps) {
@@ -61,6 +65,7 @@ const NaverMap = () => {
         };
 
         const map = new window.naver.maps.Map(mapRef.current, mapOptions);
+        mapInstanceRef.current = map;
         console.log("Naver Map 초기화 성공!");
 
         // 인증 에러 처리
@@ -70,12 +75,32 @@ const NaverMap = () => {
             "네이버 지도 인증에 실패했습니다. 관리자에게 문의하세요."
           );
         });
+
+        // 초기 데이터 가져오기
+        const initialData = getMapUpdateData();
+        setMapData(initialData);
+        console.log("초기 데이터 로드:", initialData);
       } catch (error) {
         console.error("지도 초기화 중 오류:", error);
         setMapError("지도 초기화 중 오류가 발생했습니다.");
       }
     }
   }, [isScriptLoaded]);
+
+  // 주기적으로 데이터 업데이트 (초당 12회 = 약 83ms마다)
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+
+    const interval = setInterval(() => {
+      // 실제로는 서버에서 WebSocket으로 데이터를 받아옴
+      // 여기서는 예시 데이터를 생성
+      const newData = getMapUpdateData();
+      setMapData(newData);
+      console.log("데이터 업데이트:", new Date().toISOString());
+    }, 83); // 약 12fps
+
+    return () => clearInterval(interval);
+  }, [mapInstanceRef.current]);
 
   // 에러 발생 시 표시
   if (mapError) {
