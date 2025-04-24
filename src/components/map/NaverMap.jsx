@@ -76,7 +76,10 @@ const NaverMap = () => {
         const mapOptions = {
           center: new window.naver.maps.LatLng(37.5666805, 126.9784147),
           zoom: 14,
-          mapTypeControl: true,
+          mapTypeControl: false, // 지도 타입 컨트롤(일반/위성) 제거
+          scaleControl: false, // 축척 컨트롤 제거
+          logoControl: true, // 로고는 유지 (법적 요구사항)
+          mapDataControl: false, // 데이터 저작권 컨트롤 제거
         };
 
         const map = new window.naver.maps.Map(mapRef.current, mapOptions);
@@ -287,7 +290,7 @@ const NaverMap = () => {
   }
 
   return (
-    <>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div
         ref={mapRef}
         style={{
@@ -303,7 +306,7 @@ const NaverMap = () => {
         isOpen={isDetailsPanelOpen}
         onClose={handleCloseDetailsPanel}
       />
-    </>
+    </div>
   );
 };
 
