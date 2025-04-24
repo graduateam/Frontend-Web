@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fetchMapUpdateData } from "../../utils/NaverMapData";
 import { fetchCameraData } from "../../utils/CameraData"; // 새로 만든 CameraData 가져오기
+import CameraDetailsPanel from "./CameraDetailsPanel"; // 카메라 상세 패널 불러오기
+import "./CameraDetailsPanel.css"; // 스타일 불러오기
 
 console.log("[NaverMap] 컴포넌트 정의");
 
@@ -12,6 +14,10 @@ const NaverMap = () => {
   const [mapData, setMapData] = useState(null);
   const [cameras, setCameras] = useState([]); // mockCameraData 대신 상태로 관리
   const cameraMarkersRef = useRef([]);
+
+  // 카메라 상세 정보 패널 상태
+  const [selectedCamera, setSelectedCamera] = useState(null);
+  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
   useEffect(() => {
     // 이미 스크립트가 로드되었는지 확인
@@ -161,7 +167,7 @@ const NaverMap = () => {
             map: mapInstanceRef.current,
             icon: {
               content: `
-              <div>
+              <div style="cursor: pointer;">
                 <img 
                   src="/src/assets/images/icons/camera-icon.svg" 
                   alt="카메라 ${camera.id}" 
@@ -180,7 +186,10 @@ const NaverMap = () => {
               위치: `${camera.location.latitude}, ${camera.location.longitude}`,
               상태: camera.status,
             });
-            // 클릭 시 추가 동작 여기에 구현
+
+            // 카메라 상세 정보 패널 열기
+            setSelectedCamera(camera);
+            setIsDetailsPanelOpen(true);
           });
 
           cameraMarkersRef.current.push(marker);
@@ -250,6 +259,15 @@ const NaverMap = () => {
     };
   }, [mapInstanceRef.current]);
 
+  // 카메라 상세 패널 닫기 핸들러
+  const handleCloseDetailsPanel = () => {
+    setIsDetailsPanelOpen(false);
+    // 패널이 닫힌 후 선택된 카메라 정보 초기화 (애니메이션 끝난 후)
+    setTimeout(() => {
+      setSelectedCamera(null);
+    }, 300); // CSS 트랜지션 시간과 일치
+  };
+
   // 에러 발생 시 표시
   if (mapError) {
     return (
@@ -269,14 +287,23 @@ const NaverMap = () => {
   }
 
   return (
-    <div
-      ref={mapRef}
-      style={{
-        width: "100%",
-        height: "100%",
-        minHeight: "500px",
-      }}
-    />
+    <>
+      <div
+        ref={mapRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          minHeight: "500px",
+        }}
+      />
+
+      {/* 카메라 상세 정보 패널 */}
+      <CameraDetailsPanel
+        camera={selectedCamera}
+        isOpen={isDetailsPanelOpen}
+        onClose={handleCloseDetailsPanel}
+      />
+    </>
   );
 };
 
