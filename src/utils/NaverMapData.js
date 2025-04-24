@@ -1,5 +1,7 @@
-// NaverMapData.js
+// utils/NaverMapData.js
 // 예시 데이터 - 서버의 map_update 이벤트 포맷을 모방한 GeoJSON 데이터
+
+console.log("[NaverMapData] 모듈 초기화");
 
 export const createSampleData = () => {
   // 현재 시간 기준 타임스탬프 생성
@@ -219,7 +221,48 @@ export const createSampleData = () => {
   };
 };
 
-// 데이터 갱신 테스트용 함수
+/**
+ * 실시간 맵 데이터를 가져오는 함수 (API 호출 형태)
+ * 실제 API 연동 시 이 함수만 수정하면 됨
+ * @returns {Promise<Object>} 맵 데이터 객체
+ */
+export const fetchMapUpdateData = async () => {
+  // 성능을 위해 모든 호출에 로그를 찍지 않고 100번에 1번만 로그 출력
+  const shouldLog = Math.random() < 0.01;
+
+  if (shouldLog) {
+    console.log(
+      "[NaverMapData] fetchMapUpdateData 호출됨",
+      new Date().toISOString()
+    );
+  }
+
+  try {
+    // 실제 API 구현 시 여기에 fetch 또는 WebSocket 코드가 들어갈 것입니다.
+    // const response = await fetch('/api/map-data');
+    // const data = await response.json();
+    // return data;
+
+    // 현재는 샘플 데이터를 생성하여 반환합니다.
+    const data = createSampleData();
+
+    if (shouldLog) {
+      console.log("[NaverMapData] 맵 데이터 생성 완료", {
+        vehicles: data.vehicles.length,
+        collisions: data.collisions.length,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return data;
+  } catch (error) {
+    console.error("[NaverMapData] 맵 데이터 업데이트 오류:", error);
+    throw new Error("맵 데이터를 가져오는데 실패했습니다.");
+  }
+};
+
+// 이전 버전과의 호환성 유지
 export const getMapUpdateData = () => {
+  console.log("[NaverMapData] 기존 getMapUpdateData 호출됨 (deprecated)");
   return createSampleData();
 };
