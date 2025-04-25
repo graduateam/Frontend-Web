@@ -1,59 +1,165 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
-  // 충돌 로그를 저장할 상태 추가
+  // 로그 상태 관리
   const [collisionLogs, setCollisionLogs] = useState([]);
 
-  // 카메라가 변경될 때마다 로그 초기화
+  // 참조 객체들
+  const currentCameraIdRef = useRef(null);
+  const logsByCameraRef = useRef({}); // 카메라별 로그 저장소
+  const transitionTimeoutRef = useRef(null);
+  const isProcessingDataRef = useRef(false);
+  const lastCameraChangeTimeRef = useRef(0);
+
+  // 카메라 변경 감지 및 처리
   useEffect(() => {
     if (camera) {
-      console.log(`[CameraDetailsPanel] 카메라 ${camera.id} 선택, 로그 초기화`);
-      setCollisionLogs([]);
+      const now = Date.now();
+      const cameraChanged = currentCameraIdRef.current !== camera.id;
+
+      console.log(
+        `[CameraDetailsPanel] 카메라 ${camera.id} 선택${
+          cameraChanged ? ", 변경 감지" : ""
+        }`
+      );
+
+      if (cameraChanged) {
+        // 카메라 변경 시간 기록
+        lastCameraChangeTimeRef.current = now;
+
+        // 이전 타이머 정리
+        if (transitionTimeoutRef.current) {
+          clearTimeout(transitionTimeoutRef.current);
+        }
+
+        // 데이터 처리 일시 중지
+        isProcessingDataRef.current = false;
+
+        // 새 카메라의 ID 저장
+        currentCameraIdRef.current = camera.id;
+
+        // 이 카메라의 기존 로그가 없으면 초기화
+        if (!logsByCameraRef.current[camera.id]) {
+          logsByCameraRef.current[camera.id] = [];
+        }
+
+        // 현재 카메라의 로그로 상태 업데이트
+        setCollisionLogs([...logsByCameraRef.current[camera.id]]);
+
+        // 전환 완료 후 데이터 처리 재개를 위한 타이머 설정 (500ms 쿨다운)
+        transitionTimeoutRef.current = setTimeout(() => {
+          isProcessingDataRef.current = true;
+        }, 500);
+      } else if (
+        !isProcessingDataRef.current &&
+        now - lastCameraChangeTimeRef.current > 500
+      ) {
+        // 같은 카메라인데 처리가 멈춰있고 충분한 시간이 지났으면 처리 재개
+        isProcessingDataRef.current = true;
+      }
     }
+
+    return () => {
+      // 컴포넌트 언마운트 또는 카메라 변경 시 타이머 정리
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
   }, [camera]);
 
-  // 패널이 닫힐 때도 로그 초기화
+  // 패널 닫힘 처리
   useEffect(() => {
     if (!isOpen) {
-      setCollisionLogs([]);
+      // 데이터 처리 중지
+      isProcessingDataRef.current = false;
+
+      // 타이머 정리
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+
+      // 패널이 닫힐 때는 현재 카메라 ID 참조도 초기화
+      currentCameraIdRef.current = null;
     }
   }, [isOpen]);
 
   // 로그 초기화 함수
   const handleResetLogs = () => {
-    // 로그 상태 초기화만 수행
-    setCollisionLogs([]);
+    // 현재 카메라 ID가 유효하면 해당 카메라의 로그만 초기화
+    if (currentCameraIdRef.current) {
+      logsByCameraRef.current[currentCameraIdRef.current] = [];
+      setCollisionLogs([]);
+    }
   };
 
-  // 충돌 데이터가 변경될 때마다 로그 업데이트
+  // 새로운 충돌 데이터 처리 (이벤트 기반)
   useEffect(() => {
-    if (!collisions || collisions.length === 0 || !camera || !isOpen) return;
+    // 데이터 처리 조건 검사 강화
+    if (
+      !isProcessingDataRef.current ||
+      !collisions ||
+      collisions.length === 0 ||
+      !camera ||
+      !isOpen ||
+      currentCameraIdRef.current !== camera.id
+    ) {
+      return;
+    }
+
+    const currentCameraId = currentCameraIdRef.current;
 
     // 새로운 충돌 데이터 처리
-    const newCollisions = collisions.map((collision) => {
-      // 원본 데이터에서 필요한 정보 추출
-      const { properties } = collision;
+    const processNewCollisions = () => {
+      // 카메라 변경 도중에는 처리하지 않음
+      if (currentCameraIdRef.current !== currentCameraId) return;
 
-      return {
-        id: properties.id,
-        vehicle_ids: properties.vehicle_ids,
-        ttc: properties.ttc,
-        collision_point: collision.geometry.coordinates.reverse(), // [경도, 위도]를 [위도, 경도]로 변환
-        timestamp: properties.timestamp,
-      };
-    });
+      // 이 카메라에 대한 로그 스토리지 확인
+      if (!logsByCameraRef.current[currentCameraId]) {
+        logsByCameraRef.current[currentCameraId] = [];
+      }
 
-    // 기존 로그에 새 충돌 데이터 추가 (중복 제거 및 순서 변경)
-    setCollisionLogs((prevLogs) => {
-      // 중복 제거를 위해 ID 기반 필터링
-      const existingIds = new Set(prevLogs.map((log) => log.id));
-      const uniqueNewCollisions = newCollisions.filter(
-        (collision) => !existingIds.has(collision.id)
+      // 기존 로그에서 ID 추출
+      const existingIds = new Set(
+        logsByCameraRef.current[currentCameraId].map((log) => log.id)
       );
 
-      // 순서 변경: 새 로그를 앞에 추가
-      return [...uniqueNewCollisions, ...prevLogs];
-    });
+      // 새 충돌 데이터 처리
+      const newCollisions = collisions
+        .map((collision) => {
+          const { properties } = collision;
+          return {
+            id: properties.id,
+            vehicle_ids: properties.vehicle_ids,
+            ttc: properties.ttc,
+            collision_point: collision.geometry.coordinates.reverse(),
+            timestamp: properties.timestamp,
+            cameraId: currentCameraId,
+          };
+        })
+        // 이미 존재하는 ID는 필터링
+        .filter((collision) => !existingIds.has(collision.id));
+
+      // 새 충돌이 있으면 로그 업데이트
+      if (newCollisions.length > 0) {
+        // 최신 로그를 맨 앞에 추가
+        const updatedLogs = [
+          ...newCollisions,
+          ...logsByCameraRef.current[currentCameraId],
+        ];
+
+        // 카메라별 로그 저장소 업데이트
+        logsByCameraRef.current[currentCameraId] = updatedLogs;
+
+        // 현재 선택된 카메라의 로그만 상태에 반영
+        if (currentCameraIdRef.current === currentCameraId) {
+          setCollisionLogs(updatedLogs);
+        }
+      }
+    };
+
+    // 즉시 실행하지만 비동기 컨텍스트에서 실행하여 렌더링 차단 방지
+    requestAnimationFrame(processNewCollisions);
   }, [collisions, camera, isOpen]);
 
   // 날짜 포맷팅 도우미 함수
@@ -66,6 +172,11 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
   };
 
   if (!camera) return null;
+
+  // 마지막 안전장치: 렌더링 직전에 현재 카메라 ID 확인하여 로그 필터링
+  const finalFilteredLogs = collisionLogs.filter(
+    (log) => !log.cameraId || log.cameraId === camera.id
+  );
 
   return (
     <div className={`camera-details-panel ${isOpen ? "open" : ""}`}>
@@ -93,7 +204,7 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
         <div className="collision-log">
           <div className="section-header">
             <h4 className="seoul-14-bold">
-              충돌 예측 로그 ({collisionLogs.length}건)
+              충돌 예측 로그 ({finalFilteredLogs.length}건)
             </h4>
             <button onClick={handleResetLogs} className="reset-button">
               초기화
@@ -111,7 +222,7 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
                 </tr>
               </thead>
               <tbody>
-                {collisionLogs.map((collision) => (
+                {finalFilteredLogs.map((collision) => (
                   <tr key={collision.id}>
                     <td>{collision.id}</td>
                     <td>{collision.vehicle_ids.join(", ")}</td>
@@ -120,7 +231,7 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
                     <td>{formatTimestamp(collision.timestamp)}</td>
                   </tr>
                 ))}
-                {collisionLogs.length === 0 && (
+                {finalFilteredLogs.length === 0 && (
                   <tr>
                     <td colSpan="5" className="no-data-message">
                       실시간 충돌 예측 데이터가 없습니다
