@@ -1,19 +1,20 @@
 import React from "react";
 import Button from "../common/Button";
 import useAuth from "../../hooks/useAuth";
+// 이미지 import 추가
+import CircleLogo from "@/assets/images/logos/circle-logo.svg";
 
 const Header = ({ showLogout = false }) => {
   const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();
-    // 로그아웃 후 로그인 페이지로 이동은 App.jsx의 라우팅 로직으로 처리됨
   };
 
   return (
     <header className="header bg-traffic-orange">
       <img
-        src="/src/assets/images/logos/circle-logo.svg"
+        src={CircleLogo} // 수정: 하드코딩 경로 대신 import한 변수 사용
         alt="Circle Logo"
         className="header-logo"
       />

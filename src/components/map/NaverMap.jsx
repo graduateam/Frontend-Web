@@ -1,9 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fetchMapUpdateData } from "../../utils/NaverMapData";
-import { fetchCameraData } from "../../utils/CameraData"; // 새로 만든 CameraData 가져오기
-import CameraDetailsPanel from "./CameraDetailsPanel"; // 카메라 상세 패널 불러오기
+import { fetchCameraData } from "../../utils/CameraData";
+import CameraDetailsPanel from "./CameraDetailsPanel";
 
 console.log("[NaverMap] 컴포넌트 정의");
+
+// 이미지를 모듈로 가져와서 URL 생성
+const ICONS = {
+  camera: new URL("@/assets/images/icons/camera-icon.svg", import.meta.url)
+    .href,
+  vehicle: new URL("@/assets/images/icons/vehicle-icon.svg", import.meta.url)
+    .href,
+  person: new URL("@/assets/images/icons/person-icon.svg", import.meta.url)
+    .href,
+};
 
 const NaverMap = () => {
   const mapRef = useRef(null);
@@ -188,7 +198,7 @@ const NaverMap = () => {
               content: `
               <div style="cursor: pointer;">
                 <img 
-                  src="/src/assets/images/icons/camera-icon.svg" 
+                  src="${ICONS.camera}"  // 수정: 동적으로 생성된 URL 사용
                   alt="카메라 ${camera.id}" 
                   width="${imageSize * 0.75}" 
                   height="${imageSize * 0.75}"
@@ -368,7 +378,7 @@ const NaverMap = () => {
                 content: `
                   <div style="cursor: pointer;">
                     <img 
-                      src="/src/assets/images/icons/vehicle-icon.svg" 
+                      src="${ICONS.vehicle}"  // 수정: 동적으로 생성된 URL 사용
                       alt="차량 ${vehicle.properties.id}" 
                       width="${imageSize * 0.75}" 
                       height="${imageSize * 0.75}"
@@ -421,7 +431,7 @@ const NaverMap = () => {
                 content: `
                   <div style="cursor: pointer;">
                     <img 
-                      src="/src/assets/images/icons/person-icon.svg" 
+                      src="${ICONS.person}"  // 수정: 동적으로 생성된 URL 사용
                       alt="인원 ${person.properties.id}" 
                       width="${imageSize * 0.75}" 
                       height="${imageSize * 0.75}"
