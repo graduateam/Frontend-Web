@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
+const useCollisionLogs = (camera, isOpen, collisions) => {
   // 로그 상태 관리
   const [collisionLogs, setCollisionLogs] = useState([]);
-  // 애니메이션 상태 추가
-  const [animationClass, setAnimationClass] = useState("");
 
   // 참조 객체들
   const currentCameraIdRef = useRef(null);
@@ -12,7 +10,6 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
   const transitionTimeoutRef = useRef(null);
   const isProcessingDataRef = useRef(false);
   const lastCameraChangeTimeRef = useRef(0);
-  const panelRef = useRef(null); // 패널 DOM 요소 참조 추가
 
   // 카메라 변경 감지 및 처리
   useEffect(() => {
@@ -72,12 +69,8 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
 
   // 패널 열림/닫힘 애니메이션 처리
   useEffect(() => {
-    // 패널이 열리거나 닫힐 때 애니메이션 상태 설정
-    if (isOpen) {
-      // 패널이 열릴 때는 즉시 'open' 클래스 추가
-      setAnimationClass("open");
-    } else {
-      // 패널이 닫힐 때 데이터 처리 중지
+    // 패널이 닫힐 때 데이터 처리 중지
+    if (!isOpen) {
       isProcessingDataRef.current = false;
 
       // 타이머 정리
@@ -86,22 +79,10 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
         transitionTimeoutRef.current = null;
       }
 
-      // 패널이 닫힐 때는 'open' 클래스 제거
-      setAnimationClass("");
-
       // 패널이 닫힐 때는 현재 카메라 ID 참조도 초기화
       currentCameraIdRef.current = null;
     }
   }, [isOpen]);
-
-  // 로그 초기화 함수
-  const handleResetLogs = () => {
-    // 현재 카메라 ID가 유효하면 해당 카메라의 로그만 초기화
-    if (currentCameraIdRef.current) {
-      logsByCameraRef.current[currentCameraIdRef.current] = [];
-      setCollisionLogs([]);
-    }
-  };
 
   // 새로운 충돌 데이터 처리 (이벤트 기반)
   useEffect(() => {
@@ -172,89 +153,24 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
     requestAnimationFrame(processNewCollisions);
   }, [collisions, camera, isOpen]);
 
-  // 날짜 포맷팅 도우미 함수
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    return `${date.getHours().toString().padStart(2, "0")}:${date
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+  // 로그 초기화 함수
+  const handleResetLogs = () => {
+    // 현재 카메라 ID가 유효하면 해당 카메라의 로그만 초기화
+    if (currentCameraIdRef.current) {
+      logsByCameraRef.current[currentCameraIdRef.current] = [];
+      setCollisionLogs([]);
+    }
   };
-
-  if (!camera) return null;
 
   // 마지막 안전장치: 렌더링 직전에 현재 카메라 ID 확인하여 로그 필터링
   const finalFilteredLogs = collisionLogs.filter(
-    (log) => !log.cameraId || log.cameraId === camera.id
+    (log) => !log.cameraId || log.cameraId === (camera?.id || null)
   );
 
-  return (
-    <div className={`camera-details-panel ${animationClass}`} ref={panelRef}>
-      <div className="panel-header">
-        <button className="close-button" onClick={onClose}>
-          ×
-        </button>
-        <h3 className="camera-name seoul-16-bold">
-          {camera.name} (ID: {camera.id})
-        </h3>
-      </div>
-
-      <div className="panel-content">
-        {/* 영상 컨테이너 */}
-        <div className="video-container">
-          <div className="video-placeholder">
-            <div className="video-text seoul-14-bold">
-              <p>카메라 스트림 연결되지 않음</p>
-              <p>상태: {camera.status}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* 충돌 로그 */}
-        <div className="collision-log">
-          <div className="section-header">
-            <h4 className="seoul-14-bold">
-              충돌 예측 로그 ({finalFilteredLogs.length}건)
-            </h4>
-            <button onClick={handleResetLogs} className="reset-button">
-              초기화
-            </button>
-          </div>
-          <div className="log-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>차량</th>
-                  <th>시간</th>
-                  <th>위치</th>
-                  <th>기록</th>
-                </tr>
-              </thead>
-              <tbody>
-                {finalFilteredLogs.map((collision) => (
-                  <tr key={collision.id}>
-                    <td>{collision.id}</td>
-                    <td>{collision.vehicle_ids.join(", ")}</td>
-                    <td>{parseFloat(collision.ttc).toFixed(1)}초</td>
-                    <td>[{collision.collision_point[0].toFixed(4)}]</td>
-                    <td>{formatTimestamp(collision.timestamp)}</td>
-                  </tr>
-                ))}
-                {finalFilteredLogs.length === 0 && (
-                  <tr>
-                    <td colSpan="5" className="no-data-message">
-                      실시간 충돌 예측 데이터가 없습니다
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return {
+    collisionLogs: finalFilteredLogs,
+    handleResetLogs,
+  };
 };
 
-export default CameraDetailsPanel;
+export default useCollisionLogs;
