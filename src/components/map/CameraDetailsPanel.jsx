@@ -4,6 +4,21 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
   // 충돌 로그를 저장할 상태 추가
   const [collisionLogs, setCollisionLogs] = useState([]);
 
+  // 카메라가 변경될 때마다 로그 초기화
+  useEffect(() => {
+    if (camera) {
+      console.log(`[CameraDetailsPanel] 카메라 ${camera.id} 선택, 로그 초기화`);
+      setCollisionLogs([]);
+    }
+  }, [camera]);
+
+  // 패널이 닫힐 때도 로그 초기화
+  useEffect(() => {
+    if (!isOpen) {
+      setCollisionLogs([]);
+    }
+  }, [isOpen]);
+
   // 로그 초기화 함수
   const handleResetLogs = () => {
     // 로그 상태 초기화만 수행
@@ -12,7 +27,7 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
 
   // 충돌 데이터가 변경될 때마다 로그 업데이트
   useEffect(() => {
-    if (!collisions || collisions.length === 0) return;
+    if (!collisions || collisions.length === 0 || !camera || !isOpen) return;
 
     // 새로운 충돌 데이터 처리
     const newCollisions = collisions.map((collision) => {
@@ -39,7 +54,7 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
       // 순서 변경: 새 로그를 앞에 추가
       return [...uniqueNewCollisions, ...prevLogs];
     });
-  }, [collisions]);
+  }, [collisions, camera, isOpen]);
 
   // 날짜 포맷팅 도우미 함수
   const formatTimestamp = (timestamp) => {
