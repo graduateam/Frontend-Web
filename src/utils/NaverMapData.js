@@ -1,7 +1,14 @@
-// utils/NaverMapData.js
-// 예시 데이터 - 서버의 map_update 이벤트 포맷을 모방한 GeoJSON 데이터
+/**
+ * 네이버 지도 데이터 유틸리티
+ * 실제 API 호출은 mapApi로 위임합니다.
+ */
+
+import mapApi from "../services/api/mapApi";
 
 console.log("[NaverMapData] 모듈 초기화");
+
+// 여기서부터는 모의 데이터 생성을 위한 코드로,
+// 실제 서버 연동 시에는 사용되지 않습니다.
 
 // 차량 상태 관리를 위한 전역 변수들
 let vehicles = [];
@@ -415,9 +422,8 @@ export const createSampleData = (selectedCameraId) => {
 };
 
 /**
- * 실시간 맵 데이터를 가져오는 함수 (API 호출 형태)
- * 실제 API 연동 시 이 함수만 수정하면 됨
- * @param {number} selectedCameraId - 선택된 카메라 ID (없으면 null)
+ * 실시간 맵 데이터를 가져오는 함수
+ * @param {number|null} selectedCameraId - 선택된 카메라 ID (없으면 null)
  * @returns {Promise<Object>} 맵 데이터 객체
  */
 export const fetchMapUpdateData = async (selectedCameraId = null) => {
@@ -435,19 +441,36 @@ export const fetchMapUpdateData = async (selectedCameraId = null) => {
   }
 
   try {
-    // 샘플 데이터를 생성하여 반환합니다.
-    const data = createSampleData(selectedCameraId);
+    // 개발 환경에서만 모의 데이터 사용
+    if (import.meta.env.DEV && !import.meta.env.VITE_USE_REAL_API) {
+      // 샘플 데이터를 생성하여 반환합니다.
+      const data = createSampleData(selectedCameraId);
 
-    if (shouldLog) {
-      console.log("[NaverMapData] 맵 데이터 생성 완료", {
-        vehicles: data.vehicles.length,
-        collisions: data.collisions.length,
-        카메라: selectedCameraId,
-        timestamp: new Date().toISOString(),
-      });
+      if (shouldLog) {
+        console.log("[NaverMapData] 모의 맵 데이터 생성 완료", {
+          vehicles: data.vehicles.length,
+          collisions: data.collisions.length,
+          카메라: selectedCameraId,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      return data;
+    } else {
+      // 실제 API 호출
+      const data = await mapApi.getMapUpdateData(selectedCameraId);
+
+      if (shouldLog) {
+        console.log("[NaverMapData] API 맵 데이터 로드 완료", {
+          vehicles: data.vehicles?.length || 0,
+          collisions: data.collisions?.length || 0,
+          카메라: selectedCameraId,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      return data;
     }
-
-    return data;
   } catch (error) {
     console.error("[NaverMapData] 맵 데이터 업데이트 오류:", error);
     throw new Error("맵 데이터를 가져오는데 실패했습니다.");
@@ -458,4 +481,9 @@ export const fetchMapUpdateData = async (selectedCameraId = null) => {
 export const getMapUpdateData = () => {
   console.log("[NaverMapData] 기존 getMapUpdateData 호출됨 (deprecated)");
   return createSampleData(null);
+};
+
+export default {
+  fetchMapUpdateData,
+  getMapUpdateData,
 };
