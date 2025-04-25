@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { fetchMapUpdateData } from "../../utils/NaverMapData";
 import { fetchCameraData } from "../../utils/CameraData"; // 새로 만든 CameraData 가져오기
 import CameraDetailsPanel from "./CameraDetailsPanel"; // 카메라 상세 패널 불러오기
-import "./CameraDetailsPanel.css"; // 스타일 불러오기
+import "../../assets/styles/CameraDetailsPanel.css";
 
 console.log("[NaverMap] 컴포넌트 정의");
 
@@ -300,11 +300,11 @@ const NaverMap = () => {
         }}
       />
 
-      {/* 카메라 상세 정보 패널 */}
       <CameraDetailsPanel
         camera={selectedCamera}
         isOpen={isDetailsPanelOpen}
         onClose={handleCloseDetailsPanel}
+        collisions={mapData?.collisions || []} // 실시간 충돌 데이터 전달
       />
     </div>
   );

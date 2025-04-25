@@ -1,4 +1,5 @@
-/* CameraDetailsPanel.css */
+/* CameraDetailsPanel.css - 이동됨: assets/styles/ */
+
 .camera-details-panel {
   position: fixed;
   right: -350px; /* 시작 위치는 화면 오른쪽으로 숨겨둠 */
@@ -153,15 +154,6 @@ tr td {
   font-weight: normal; /* 모든 셀 텍스트 굵기를 normal(regular)로 통일 */
 }
 
-/* 기존의 강조 스타일 제거 - 아래 코드를 주석 처리 또는 삭제 */
-/* 
-  tr.critical td:nth-child(3),
-  tr.warning td:nth-child(3) {
-    color: var(--color-traffic-orange);
-    font-weight: bold;
-  }
-  */
-
 /* 반응형 스타일 */
 @media (max-width: 768px) {
   .camera-details-panel {
@@ -171,4 +163,34 @@ tr td {
   .video-container {
     height: 160px; /* 모바일에서는 작게 */
   }
+}
+
+/* 추가된 스타일 - 인라인 스타일 대체 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  color: var(--color-traffic-orange-b2);
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+}
+
+.reset-button {
+  background-color: var(--color-traffic-orange);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: var(--color-traffic-orange-d1);
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 20px 0;
 }
