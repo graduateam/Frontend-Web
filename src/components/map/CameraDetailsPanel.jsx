@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-// 경로 수정
-import "../../assets/styles/CameraDetailsPanel.css";
 
 const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
   // 충돌 로그를 저장할 상태 추가

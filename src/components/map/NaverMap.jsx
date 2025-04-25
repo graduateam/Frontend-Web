@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { fetchMapUpdateData } from "../../utils/NaverMapData";
 import { fetchCameraData } from "../../utils/CameraData"; // 새로 만든 CameraData 가져오기
 import CameraDetailsPanel from "./CameraDetailsPanel"; // 카메라 상세 패널 불러오기
-import "../../assets/styles/CameraDetailsPanel.css";
 
 console.log("[NaverMap] 컴포넌트 정의");
 
@@ -14,6 +13,11 @@ const NaverMap = () => {
   const [mapData, setMapData] = useState(null);
   const [cameras, setCameras] = useState([]); // mockCameraData 대신 상태로 관리
   const cameraMarkersRef = useRef([]);
+  // 차량 및 인원 마커를 관리하기 위한 ref 추가
+  const vehicleMarkersRef = useRef([]);
+  const personMarkersRef = useRef([]);
+  // 비디오 경계 다각형을 관리하기 위한 ref 추가
+  const videoBoundaryRef = useRef(null);
 
   // 카메라 상세 정보 패널 상태
   const [selectedCamera, setSelectedCamera] = useState(null);
@@ -80,6 +84,10 @@ const NaverMap = () => {
           scaleControl: false, // 축척 컨트롤 제거
           logoControl: true, // 로고는 유지 (법적 요구사항)
           mapDataControl: false, // 데이터 저작권 컨트롤 제거
+          zoomControl: true, // 줌 컨트롤 활성화
+          zoomControlOptions: {
+            position: window.naver.maps.Position.TOP_RIGHT,
+          },
         };
 
         const map = new window.naver.maps.Map(mapRef.current, mapOptions);
@@ -181,6 +189,7 @@ const NaverMap = () => {
             `,
               anchor: new window.naver.maps.Point(20, 20), // 마커 중앙 지점
             },
+            zIndex: 100, // 비디오 경계보다 높은 z-index 설정
           });
 
           // 마커 클릭 이벤트
@@ -207,6 +216,157 @@ const NaverMap = () => {
       }
     }
   }, [isScriptLoaded, cameras]);
+
+  // 차량 및 사람 마커 업데이트 - mapData가 변경될 때마다 실행
+  useEffect(() => {
+    if (!isScriptLoaded || !mapInstanceRef.current || !mapData) return;
+
+    try {
+      // 기존 차량 마커 제거
+      if (vehicleMarkersRef.current.length > 0) {
+        vehicleMarkersRef.current.forEach((marker) => marker.setMap(null));
+        vehicleMarkersRef.current = [];
+      }
+
+      // 기존 인원 마커 제거 (향후 인원 데이터가 추가될 경우를 대비)
+      if (personMarkersRef.current.length > 0) {
+        personMarkersRef.current.forEach((marker) => marker.setMap(null));
+        personMarkersRef.current = [];
+      }
+
+      // 비디오 경계 영역 업데이트
+      if (
+        mapData.video_boundary &&
+        mapData.video_boundary.geometry &&
+        mapData.video_boundary.geometry.coordinates
+      ) {
+        // 기존 경계 제거
+        if (videoBoundaryRef.current) {
+          videoBoundaryRef.current.setMap(null);
+          videoBoundaryRef.current = null;
+        }
+
+        try {
+          // 비디오 경계 좌표 가져오기
+          const coordinates = mapData.video_boundary.geometry.coordinates[0];
+
+          // 네이버 지도 API 형식으로 좌표 변환 (경도,위도 → LatLng 객체)
+          const pathCoordinates = coordinates.map(
+            ([lng, lat]) => new window.naver.maps.LatLng(lat, lng)
+          );
+
+          // 다각형 생성
+          const polygon = new window.naver.maps.Polygon({
+            map: mapInstanceRef.current,
+            paths: pathCoordinates,
+            fillColor: "#e15501", // 주황색 (traffic-orange 컬러와 일치)
+            fillOpacity: 0.2, // 20% 불투명도
+            strokeColor: "#e15501",
+            strokeWeight: 2,
+            strokeOpacity: 0.6,
+            zIndex: 1, // 마커보다 낮은 z-index (마커는 기본적으로 더 높은 z-index를 가짐)
+          });
+
+          // ref에 저장
+          videoBoundaryRef.current = polygon;
+
+          console.log("[NaverMap] 비디오 경계 영역 업데이트 완료");
+        } catch (error) {
+          console.error("[NaverMap] 비디오 경계 처리 중 오류:", error);
+        }
+      }
+
+      // 차량 마커 추가
+      if (mapData.vehicles && mapData.vehicles.length > 0) {
+        mapData.vehicles.forEach((vehicle) => {
+          if (!vehicle.geometry || !vehicle.geometry.coordinates) return;
+
+          const [longitude, latitude] = vehicle.geometry.coordinates;
+          const markerPosition = new window.naver.maps.LatLng(
+            latitude,
+            longitude
+          );
+
+          // 이미지 크기 정의 (카메라 마커와 동일한 크기)
+          const imageSize = 40;
+
+          const marker = new window.naver.maps.Marker({
+            position: markerPosition,
+            map: mapInstanceRef.current,
+            icon: {
+              content: `
+                <div style="cursor: pointer;">
+                  <img 
+                    src="/src/assets/images/icons/vehicle-icon.svg" 
+                    alt="차량 ${vehicle.properties.id}" 
+                    width="${imageSize * 0.75}" 
+                    height="${imageSize * 0.75}"
+                  />
+                </div>
+              `,
+              anchor: new window.naver.maps.Point(20, 20), // 마커 중앙 지점
+            },
+            zIndex: 100, // 비디오 경계보다 높은 z-index 설정
+          });
+
+          // 마커 클릭 이벤트 (선택적)
+          window.naver.maps.Event.addListener(marker, "click", () => {
+            console.log(`[NaverMap] 차량 ${vehicle.properties.id} 클릭:`, {
+              위치: `${latitude}, ${longitude}`,
+              속도: `${vehicle.properties.speed} m/s (${vehicle.properties.speed_kph} km/h)`,
+              방향: `${vehicle.properties.heading}°`,
+              충돌위험: vehicle.properties.is_collision_risk ? "있음" : "없음",
+              충돌시간: vehicle.properties.ttc
+                ? `${vehicle.properties.ttc}초 후`
+                : "없음",
+            });
+          });
+
+          vehicleMarkersRef.current.push(marker);
+        });
+      }
+
+      // 인원 마커는 현재 데이터에 없지만, 향후 확장성을 위해 구현
+      // mapData에 persons 데이터가 있을 경우에만 실행됨
+      if (mapData.persons && mapData.persons.length > 0) {
+        mapData.persons.forEach((person) => {
+          if (!person.geometry || !person.geometry.coordinates) return;
+
+          const [longitude, latitude] = person.geometry.coordinates;
+          const markerPosition = new window.naver.maps.LatLng(
+            latitude,
+            longitude
+          );
+
+          // 이미지 크기 정의 (카메라 마커와 동일한 크기)
+          const imageSize = 40;
+
+          const marker = new window.naver.maps.Marker({
+            position: markerPosition,
+            map: mapInstanceRef.current,
+            icon: {
+              content: `
+                <div style="cursor: pointer;">
+                  <img 
+                    src="/src/assets/images/icons/person-icon.svg" 
+                    alt="인원 ${person.properties.id}" 
+                    width="${imageSize * 0.75}" 
+                    height="${imageSize * 0.75}"
+                  />
+                </div>
+              `,
+              anchor: new window.naver.maps.Point(20, 20), // 마커 중앙 지점
+            },
+            zIndex: 100, // 비디오 경계보다 높은 z-index 설정
+          });
+
+          personMarkersRef.current.push(marker);
+        });
+      }
+    } catch (error) {
+      console.error("[NaverMap] 차량/인원 마커 업데이트 중 오류:", error);
+    }
+  }, [isScriptLoaded, mapData]);
 
   // 주기적으로 데이터 업데이트 (초당 12회 = 약 83ms마다)
   useEffect(() => {
@@ -274,10 +434,7 @@ const NaverMap = () => {
   // 에러 발생 시 표시
   if (mapError) {
     return (
-      <div
-        className="map-error bg-gray-10 text-traffic-orange-b3"
-        style={{ padding: "20px", textAlign: "center", height: "100%" }}
-      >
+      <div className="map-error bg-gray-10 text-traffic-orange-b3">
         <p className="seoul-16-bold">{mapError}</p>
         <button
           className="bg-traffic-orange text-white mt-4 py-2 px-4 rounded"
@@ -290,15 +447,8 @@ const NaverMap = () => {
   }
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      <div
-        ref={mapRef}
-        style={{
-          width: "100%",
-          height: "100%",
-          minHeight: "500px",
-        }}
-      />
+    <div className="map-wrapper">
+      <div ref={mapRef} className="map-container" />
 
       <CameraDetailsPanel
         camera={selectedCamera}
