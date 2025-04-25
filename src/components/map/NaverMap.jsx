@@ -100,9 +100,6 @@ const NaverMap = ({ selectedCameraId, cameras, onPanelStateChange }) => {
           logoControl: true, // 로고는 유지 (법적 요구사항)
           mapDataControl: false, // 데이터 저작권 컨트롤 제거
           zoomControl: true, // 줌 컨트롤 활성화
-          zoomControlOptions: {
-            position: window.naver.maps.Position.TOP_RIGHT,
-          },
         };
 
         const map = new window.naver.maps.Map(mapRef.current, mapOptions);
