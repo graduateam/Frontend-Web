@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
   // 로그 상태 관리
   const [collisionLogs, setCollisionLogs] = useState([]);
+  // 애니메이션 상태 추가
+  const [animationClass, setAnimationClass] = useState("");
 
   // 참조 객체들
   const currentCameraIdRef = useRef(null);
@@ -10,6 +12,7 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
   const transitionTimeoutRef = useRef(null);
   const isProcessingDataRef = useRef(false);
   const lastCameraChangeTimeRef = useRef(0);
+  const panelRef = useRef(null); // 패널 DOM 요소 참조 추가
 
   // 카메라 변경 감지 및 처리
   useEffect(() => {
@@ -67,10 +70,14 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
     };
   }, [camera]);
 
-  // 패널 닫힘 처리
+  // 패널 열림/닫힘 애니메이션 처리
   useEffect(() => {
-    if (!isOpen) {
-      // 데이터 처리 중지
+    // 패널이 열리거나 닫힐 때 애니메이션 상태 설정
+    if (isOpen) {
+      // 패널이 열릴 때는 즉시 'open' 클래스 추가
+      setAnimationClass("open");
+    } else {
+      // 패널이 닫힐 때 데이터 처리 중지
       isProcessingDataRef.current = false;
 
       // 타이머 정리
@@ -78,6 +85,9 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
         clearTimeout(transitionTimeoutRef.current);
         transitionTimeoutRef.current = null;
       }
+
+      // 패널이 닫힐 때는 'open' 클래스 제거
+      setAnimationClass("");
 
       // 패널이 닫힐 때는 현재 카메라 ID 참조도 초기화
       currentCameraIdRef.current = null;
@@ -179,7 +189,7 @@ const CameraDetailsPanel = ({ camera, onClose, isOpen, collisions }) => {
   );
 
   return (
-    <div className={`camera-details-panel ${isOpen ? "open" : ""}`}>
+    <div className={`camera-details-panel ${animationClass}`} ref={panelRef}>
       <div className="panel-header">
         <button className="close-button" onClick={onClose}>
           ×

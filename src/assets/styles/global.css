@@ -239,7 +239,7 @@ input {
   display: block;
 }
 
-/* CameraDetailsPanel.css 통합 */
+/* 패널 기본 스타일 - 위치 및 트랜지션 개선 */
 .camera-details-panel {
   position: fixed;
   right: -350px; /* 시작 위치는 화면 오른쪽으로 숨겨둠 */
@@ -251,15 +251,23 @@ input {
   margin-top: var(--header-height, 0px); /* 헤더 높이만큼 아래로 이동 */
   background-color: white;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
-  transition: right 0.3s ease-in-out;
+  /* 더 부드러운 트랜지션 효과를 위해 속성 강화 */
+  transition: right 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.3s ease,
+    opacity 0.3s ease;
   z-index: 5; /* 헤더보다 낮은 z-index */
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  opacity: 0; /* 초기 상태에서는 투명하게 시작 */
+  pointer-events: none; /* 닫힌 상태에서는 클릭도 불가능하게 */
 }
 
+/* 열린 상태의 스타일 */
 .camera-details-panel.open {
   right: 0; /* 열릴 때는 화면 오른쪽에 고정 */
+  opacity: 1; /* 완전히 불투명하게 */
+  pointer-events: auto; /* 열린 상태에서는 클릭 가능하게 */
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.25); /* 더 강한 그림자 효과로 입체감 부여 */
 }
 
 .panel-header {
@@ -433,4 +441,60 @@ tr td {
 .no-data-message {
   text-align: center;
   padding: 20px 0;
+}
+
+/* 드롭다운 스타일 추가 - global.css에 추가할 내용 */
+
+/* 드롭다운 트랜지션 스타일 조정 - 패널과 동일한 속도감 유지 */
+.camera-dropdown-wrapper {
+  position: absolute;
+  top: calc(var(--header-height) + 10px);
+  right: 360px; /* 패널이 열렸을 때 가려지지 않도록 충분한 여백 */
+  z-index: 10;
+  padding: 8px;
+  /* 패널과 동일한 트랜지션 커브 적용 */
+  transition: right 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* 패널과 드롭다운의 애니메이션 동기화를 위한 딜레이 추가 (선택사항) */
+.camera-dropdown-wrapper.panel-closed {
+  right: 10px;
+  transition-delay: 0.05s; /* 패널이 먼저 닫히고 드롭다운이 따라오는 효과 */
+}
+
+/* 드롭다운 스타일 */
+.camera-dropdown {
+  background-color: white;
+  border: 1px solid var(--color-gray-20);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  min-width: 180px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  color: var(--color-off-black);
+  appearance: none; /* 기본 스타일 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23656565' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 28px;
+}
+
+.camera-dropdown:focus {
+  outline: none;
+  border-color: var(--color-traffic-orange);
+  box-shadow: 0 0 0 2px rgba(225, 85, 1, 0.2);
+}
+
+.camera-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* 호버 효과 */
+.camera-dropdown:hover {
+  border-color: var(--color-traffic-orange-d1);
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fetchMapUpdateData } from "../../utils/NaverMapData";
-import { fetchCameraData } from "../../utils/CameraData";
 import CameraDetailsPanel from "./CameraDetailsPanel";
 
 console.log("[NaverMap] 컴포넌트 정의");
@@ -15,13 +14,12 @@ const ICONS = {
     .href,
 };
 
-const NaverMap = () => {
+const NaverMap = ({ selectedCameraId, cameras, onPanelStateChange }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [mapError, setMapError] = useState(null);
   const [mapData, setMapData] = useState(null);
-  const [cameras, setCameras] = useState([]); // mockCameraData 대신 상태로 관리
   const cameraMarkersRef = useRef([]);
   // 차량 및 인원 마커를 관리하기 위한 ref 추가
   const vehicleMarkersRef = useRef([]);
@@ -29,6 +27,9 @@ const NaverMap = () => {
   // 비디오 경계 다각형을 관리하기 위한 ref 추가
   const videoBoundaryRef = useRef(null);
   const allVideoBoundariesRef = useRef([]);
+
+  // 카메라 마커를 ID별로 빠르게 접근하기 위한 ref
+  const cameraMarkersByIdRef = useRef({});
 
   // 카메라 상세 정보 패널 상태
   const [selectedCamera, setSelectedCamera] = useState(null);
@@ -138,27 +139,80 @@ const NaverMap = () => {
           .catch((error) => {
             console.error("[NaverMap] 초기 맵 데이터 로드 실패:", error);
           });
-
-        // 카메라 데이터 가져오기 (1회만)
-        console.log("[NaverMap] 카메라 데이터 요청 시작");
-        fetchCameraData()
-          .then((cameraData) => {
-            console.log("[NaverMap] 카메라 데이터 로드 완료", {
-              count: cameraData.length,
-              cameras: cameraData.map((c) => `${c.id}:${c.name}`).join(", "),
-            });
-            setCameras(cameraData);
-          })
-          .catch((error) => {
-            console.error("[NaverMap] 카메라 데이터 로드 실패:", error);
-            setMapError("카메라 정보를 불러오지 못했습니다.");
-          });
       } catch (error) {
         console.error("[NaverMap] 지도 초기화 중 오류:", error);
         setMapError("지도 초기화 중 오류가 발생했습니다.");
       }
     }
   }, [isScriptLoaded]);
+
+  // 패널 상태 변경 시 부모 컴포넌트에 알림
+  useEffect(() => {
+    if (typeof onPanelStateChange === "function") {
+      onPanelStateChange(isDetailsPanelOpen);
+    }
+  }, [isDetailsPanelOpen, onPanelStateChange]);
+
+  // props로 받은 selectedCameraId가 변경될 때 처리
+  useEffect(() => {
+    if (
+      !selectedCameraId ||
+      !isScriptLoaded ||
+      !mapInstanceRef.current ||
+      cameras.length === 0
+    )
+      return;
+
+    console.log(`[NaverMap] 드롭다운으로 카메라 ${selectedCameraId} 선택됨`);
+
+    // 선택된 카메라 찾기
+    const camera = cameras.find((cam) => cam.id === selectedCameraId);
+    if (!camera) {
+      console.error(`[NaverMap] 카메라 ID ${selectedCameraId}를 찾을 수 없음`);
+      return;
+    }
+
+    // 먼저 선택된 카메라와 패널 상태를 설정
+    setSelectedCamera(camera);
+    setIsDetailsPanelOpen(true);
+
+    // 약간의 딜레이를 두고 지도 중심 조정 (패널이 열리는 것을 기다림)
+    setTimeout(() => {
+      // 카메라 위치를 LatLng 객체로 변환
+      const cameraPosition = new window.naver.maps.LatLng(
+        camera.location.latitude,
+        camera.location.longitude
+      );
+
+      const map = mapInstanceRef.current;
+      const panelWidth = 350; // CameraDetailsPanel의 너비 (px)
+
+      // 1. 먼저 줌 레벨 설정
+      map.setZoom(16);
+
+      // 2. 지도 투영 객체 가져오기
+      const projection = map.getProjection();
+
+      // 3. 카메라 위치를 픽셀로 변환
+      const cameraPixel = projection.fromCoordToOffset(cameraPosition);
+
+      // 4. 요구사항: 지도 중심이 카메라 마커 기준 오른쪽으로 패널 너비의 절반만큼 이동
+      const offsetPixels = panelWidth / 2; // 패널 너비의 절반 (175px)
+
+      // 5. 중심점을 오른쪽으로 이동 (카메라 마커는 상대적으로 왼쪽에 위치)
+      cameraPixel.x += offsetPixels;
+
+      // 6. 조정된 픽셀 좌표를 지도 좌표로 변환
+      const newCenter = projection.fromOffsetToCoord(cameraPixel);
+
+      // 7. 새 중심점으로 지도 이동
+      map.setCenter(newCenter);
+
+      console.log(
+        `[NaverMap] 지도 중심 이동: 카메라 위치에서 오른쪽으로 ${offsetPixels}px 이동`
+      );
+    }, 100); // 100ms 딜레이
+  }, [selectedCameraId, isScriptLoaded, cameras, mapInstanceRef.current]);
 
   // 카메라 마커 추가
   useEffect(() => {
@@ -180,6 +234,9 @@ const NaverMap = () => {
           cameraMarkersRef.current.forEach((marker) => marker.setMap(null));
           cameraMarkersRef.current = [];
         }
+
+        // 마커 ID별 참조 초기화
+        cameraMarkersByIdRef.current = {};
 
         // 카메라 마커 추가
         cameras.forEach((camera) => {
@@ -223,6 +280,9 @@ const NaverMap = () => {
           });
 
           cameraMarkersRef.current.push(marker);
+
+          // ID별 마커 참조 저장 (드롭다운 선택 시 활용)
+          cameraMarkersByIdRef.current[camera.id] = marker;
         });
 
         console.log("[NaverMap] 카메라 마커 추가 완료:", {
