@@ -441,8 +441,10 @@ export const fetchMapUpdateData = async (selectedCameraId = null) => {
   }
 
   try {
-    // 개발 환경에서만 모의 데이터 사용
-    if (import.meta.env.DEV && !import.meta.env.VITE_USE_REAL_API) {
+    // 환경 변수가 명시적으로 'true'일 때만 실제 API 사용
+    const useRealApi = import.meta.env.VITE_USE_REAL_API === "true";
+
+    if (!useRealApi) {
       // 샘플 데이터를 생성하여 반환합니다.
       const data = createSampleData(selectedCameraId);
 
@@ -458,6 +460,7 @@ export const fetchMapUpdateData = async (selectedCameraId = null) => {
       return data;
     } else {
       // 실제 API 호출
+      console.log("[NaverMapData] 실제 API 호출 시도");
       const data = await mapApi.getMapUpdateData(selectedCameraId);
 
       if (shouldLog) {

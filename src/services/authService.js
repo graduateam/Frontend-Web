@@ -17,9 +17,12 @@ const USER_KEY = "smart_road_reflector_user";
  */
 export const login = async (credentials) => {
   try {
-    // 개발 환경에서만 모의 로그인 사용
-    if (import.meta.env.DEV && !import.meta.env.VITE_USE_REAL_API) {
-      // 백엔드 연동 전 임시 로직
+    // 개발 환경이거나 VITE_USE_REAL_API가 명시적으로 'true'가 아닐 때 모의 로그인 사용
+    const useRealApi = import.meta.env.VITE_USE_REAL_API === "true";
+
+    // 모의 로그인 사용 (기본 동작)
+    if (!useRealApi) {
+      console.log("[Auth] 모의 로그인 사용");
       if (
         credentials.username === "admin" &&
         credentials.password === "password"
@@ -38,11 +41,12 @@ export const login = async (credentials) => {
       } else {
         throw new Error("Invalid credentials");
       }
-    } else {
-      // 실제 API 호출
+    }
+    // 실제 API 사용
+    else {
+      console.log("[Auth] 실제 API 로그인 시도");
       const response = await authApi.login(credentials);
 
-      // 토큰과 사용자 정보 저장
       localStorage.setItem(TOKEN_KEY, response.token);
       localStorage.setItem(USER_KEY, JSON.stringify(response.user));
 
@@ -57,20 +61,10 @@ export const login = async (credentials) => {
 /**
  * 사용자 로그아웃
  */
-export const logout = async () => {
-  try {
-    // 개발 환경이 아니거나 실제 API 사용 환경에서는 API 호출
-    if (!import.meta.env.DEV || import.meta.env.VITE_USE_REAL_API) {
-      await authApi.logout();
-    }
-  } catch (error) {
-    console.error("Logout error:", error);
-    // 에러가 발생해도 로컬 로그아웃은 진행
-  } finally {
-    // 로컬 스토리지에서 인증 정보 제거
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-  }
+export const logout = () => {
+  // 로컬 스토리지에서 인증 정보 제거
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
 };
 
 /**

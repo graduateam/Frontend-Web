@@ -41,8 +41,11 @@ export const fetchCameraData = async () => {
   console.log("[CameraData] fetchCameraData 호출됨", new Date().toISOString());
 
   try {
-    // 개발 환경에서만 모의 데이터 사용
-    if (import.meta.env.DEV && !import.meta.env.VITE_USE_REAL_API) {
+    // 환경 변수가 명시적으로 'true'일 때만 실제 API 사용
+    const useRealApi = import.meta.env.VITE_USE_REAL_API === "true";
+
+    if (!useRealApi) {
+      console.log("[CameraData] 모의 데이터 사용");
       // 모의 API 지연 시뮬레이션
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -58,6 +61,7 @@ export const fetchCameraData = async () => {
       });
     } else {
       // 실제 API 호출
+      console.log("[CameraData] 실제 API 호출 시도");
       const cameras = await cameraApi.getAllCameras();
       console.log(
         `[CameraData] API에서 ${cameras.length}개 카메라 데이터 로드됨`
@@ -66,7 +70,9 @@ export const fetchCameraData = async () => {
     }
   } catch (error) {
     console.error("[CameraData] 카메라 데이터 로드 오류:", error);
-    throw new Error("카메라 데이터를 가져오는데 실패했습니다.");
+    // 에러 발생 시 빈 배열 반환하여 앱 중단 방지
+    console.log("[CameraData] 오류 발생으로 빈 카메라 배열 반환");
+    return [];
   }
 };
 
