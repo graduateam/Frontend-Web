@@ -1,15 +1,21 @@
 import React from "react";
 import Header from "../components/layout/Header";
 import LoginForm from "../components/auth/LoginForm";
-import { login } from "../services/authService";
+import useAuth from "../hooks/useAuth";
+import { Navigate } from "react-router-dom";
+// 이미지 import 추가
+import RoadIntersectionLogo from "@/assets/images/logos/road-intersection.svg";
 
 const LoginPage = () => {
+  const { isAuthenticated, login } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/main" />;
+  }
+
   const handleLogin = async (credentials) => {
     try {
       await login(credentials);
-      // 로그인 성공 시 대시보드 페이지로 이동 (라우터 연동 시 활성화)
-      // navigate('/dashboard');
-      alert("로그인 성공! 백엔드 연동 시 대시보드로 이동합니다.");
     } catch (error) {
       alert("로그인 실패: " + error.message);
     }
@@ -17,7 +23,7 @@ const LoginPage = () => {
 
   return (
     <div className="app-container bg-traffic-orange-d3">
-      <Header />
+      <Header showLogout={false} />
       <div className="white-title-bar seoul-24-extrabold bg-white text-traffic-orange-b2">
         SmartRoadReflector
       </div>
@@ -27,7 +33,7 @@ const LoginPage = () => {
         </div>
         <div className="center-logo">
           <img
-            src="/src/assets/images/logos/road-intersection.svg"
+            src={RoadIntersectionLogo} // 수정: import한 변수 사용
             alt="Road Intersection"
           />
         </div>

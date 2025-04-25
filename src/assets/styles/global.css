@@ -1,4 +1,8 @@
+/* global.css - 통합 버전 */
+
+/* 변수 정의 */
 :root {
+  --header-height: 60px; /* 헤더 높이를 변수로 정의 */
   --primary-color: #ff6c22;
   --secondary-color: #8b4000;
   --text-color: #333333;
@@ -6,6 +10,7 @@
   --border-color: #dddddd;
 }
 
+/* 기본 스타일 */
 * {
   margin: 0;
   padding: 0;
@@ -37,16 +42,52 @@ input {
   outline: none;
 }
 
+/* 레이아웃 컨테이너 */
 .app-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
-  overflow: visible; /* 컨테이너 바깥으로 나가는 요소 표시 */
+  overflow: hidden; /* 컨테이너 바깥으로 나가는 요소 제어 */
   background-color: var(--color-traffic-orange); /* 배경색 추가 */
 }
 
+/* 메인 컨텐츠 영역 */
+.main-content {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 지도 관련 스타일 */
+.map-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1; /* 지도는 낮은 z-index */
+  min-height: 500px;
+}
+
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.map-error {
+  padding: 20px;
+  text-align: center;
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* 헤더 스타일 */
 .header {
   background-color: var(--color-traffic-orange);
   padding: 16px 20px;
@@ -55,6 +96,9 @@ input {
   color: white;
   position: relative; /* 로고 위치 조정을 위해 추가 */
   overflow: visible; /* 헤더 바깥으로 나가는 로고 표시 */
+  height: var(--header-height);
+  min-height: var(--header-height);
+  z-index: 10; /* 다른 요소들보다 상위에 표시 */
 }
 
 .header-logo {
@@ -72,6 +116,7 @@ input {
   font-weight: bold;
 }
 
+/* 흰색 타이틀 바 */
 .white-title-bar {
   background-color: var(--color-white);
   color: var(--text-color);
@@ -96,6 +141,7 @@ input {
   z-index: -1;
 }
 
+/* 컨텐츠 영역 */
 .content {
   background-color: var(--primary-color);
   flex: 1;
@@ -106,6 +152,7 @@ input {
   align-items: center;
 }
 
+/* 로그인 관련 스타일 */
 .korean-title {
   text-align: center;
   color: var(--color-white);
@@ -166,4 +213,288 @@ input {
   color: var(--color-white);
   font-size: 40px;
   font-weight: bold;
+}
+
+.logout-button {
+  background-color: var(--color-traffic-orange-s1);
+  color: var(--color-white);
+  /* border: 1px solid #a22f00; */
+  border-radius: 16px;
+  padding: 6px 16px;
+}
+
+/* 카메라 상세 패널 오버레이 */
+.map-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9;
+  display: none;
+}
+
+.map-overlay.visible {
+  display: block;
+}
+
+/* 패널 기본 스타일 - 위치 및 트랜지션 개선 */
+.camera-details-panel {
+  position: fixed;
+  right: -350px; /* 시작 위치는 화면 오른쪽으로 숨겨둠 */
+  top: 0; /* 페이지 상단부터 시작 */
+  width: 350px; /* 고정 너비 */
+  height: calc(
+    100vh - var(--header-height, 0px)
+  ); /* 헤더 높이를 제외한 전체 높이 */
+  margin-top: var(--header-height, 0px); /* 헤더 높이만큼 아래로 이동 */
+  background-color: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  /* 더 부드러운 트랜지션 효과를 위해 속성 강화 */
+  transition: right 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.3s ease,
+    opacity 0.3s ease;
+  z-index: 5; /* 헤더보다 낮은 z-index */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0; /* 초기 상태에서는 투명하게 시작 */
+  pointer-events: none; /* 닫힌 상태에서는 클릭도 불가능하게 */
+}
+
+/* 열린 상태의 스타일 */
+.camera-details-panel.open {
+  right: 0; /* 열릴 때는 화면 오른쪽에 고정 */
+  opacity: 1; /* 완전히 불투명하게 */
+  pointer-events: auto; /* 열린 상태에서는 클릭 가능하게 */
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.25); /* 더 강한 그림자 효과로 입체감 부여 */
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(
+    --color-traffic-orange-b3
+  ); /* 더 어두운 색상으로 변경 */
+  color: white;
+}
+
+.camera-name {
+  margin: 0;
+  font-size: 16px;
+  text-align: right; /* 텍스트 우측 정렬 */
+  flex: 1; /* 가능한 모든 공간 차지 */
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 8px; /* 버튼과 이름 사이 간격 추가 */
+}
+
+.close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column; /* 상하 배치로 변경 */
+  overflow: hidden; /* 내부 요소의 스크롤을 위해 컨테이너는 overflow:hidden */
+  padding: 0; /* 패딩 제거 */
+}
+
+.video-container {
+  height: 200px; /* 고정 높이 */
+  width: 100%;
+  background-color: #f5f5f5;
+  aspect-ratio: 4/3; /* 4:3 비율 유지 */
+  overflow: hidden;
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ececec;
+  color: #666;
+}
+
+.video-text {
+  text-align: center;
+  line-height: 1.5;
+}
+
+.collision-log {
+  flex: 1; /* 나머지 공간 모두 차지 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 내부 스크롤을 위해 */
+  border-top: 1px solid #eee;
+}
+
+.section-title {
+  margin: 0;
+  padding: 8px 12px;
+  color: var(--color-traffic-orange-b2);
+  background-color: #f9f9f9;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.log-table {
+  flex: 1; /* 부모 컨테이너의 남은 공간 채우기 */
+  overflow-y: auto; /* 스크롤 추가 */
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 고정 테이블 레이아웃 */
+}
+
+th,
+td {
+  padding: 4px 6px; /* 좁은 패딩 */
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px; /* 작은 폰트 크기 */
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 텍스트 오버플로우 처리 */
+}
+
+th {
+  background-color: #f5f5f5; /* 통일된 헤더 배경색 */
+  color: var(--color-traffic-orange-b2);
+  font-weight: 600;
+  position: sticky; /* 헤더 고정 */
+  top: 0; /* 스크롤 시 상단에 고정 */
+  z-index: 1; /* 다른 셀 위에 표시 */
+}
+
+tr {
+  background-color: white; /* 모든 행에 동일한 배경색 */
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* 홀짝 행 구분을 위한 약간의 색상 차이 */
+}
+
+tr.critical td,
+tr.warning td,
+tr td {
+  color: black; /* 모든 셀 텍스트 색상을 검은색으로 통일 */
+  font-weight: normal; /* 모든 셀 텍스트 굵기를 normal(regular)로 통일 */
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .camera-details-panel {
+    width: 280px; /* 모바일에서는 더 좁게 */
+  }
+
+  .video-container {
+    height: 160px; /* 모바일에서는 작게 */
+  }
+}
+
+/* 추가된 스타일 - 인라인 스타일 대체 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  color: var(--color-traffic-orange-b2);
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+}
+
+.reset-button {
+  background-color: var(--color-traffic-orange);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: var(--color-traffic-orange-d1);
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* 드롭다운 스타일 추가 - global.css에 추가할 내용 */
+
+/* 드롭다운 트랜지션 스타일 조정 - 패널과 동일한 속도감 유지 */
+.camera-dropdown-wrapper {
+  position: absolute;
+  top: calc(var(--header-height) + 10px);
+  right: 360px; /* 패널이 열렸을 때 가려지지 않도록 충분한 여백 */
+  z-index: 10;
+  padding: 8px;
+  /* 패널과 동일한 트랜지션 커브 적용 */
+  transition: right 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* 패널과 드롭다운의 애니메이션 동기화를 위한 딜레이 추가 (선택사항) */
+.camera-dropdown-wrapper.panel-closed {
+  right: 10px;
+  transition-delay: 0.05s; /* 패널이 먼저 닫히고 드롭다운이 따라오는 효과 */
+}
+
+/* 드롭다운 스타일 */
+.camera-dropdown {
+  background-color: white;
+  border: 1px solid var(--color-gray-20);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  min-width: 180px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  color: var(--color-off-black);
+  appearance: none; /* 기본 스타일 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23656565' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 28px;
+}
+
+.camera-dropdown:focus {
+  outline: none;
+  border-color: var(--color-traffic-orange);
+  box-shadow: 0 0 0 2px rgba(225, 85, 1, 0.2);
+}
+
+.camera-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* 호버 효과 */
+.camera-dropdown:hover {
+  border-color: var(--color-traffic-orange-d1);
 }
