@@ -22,14 +22,32 @@
 ```
 src/
 ├─ App.jsx                # 메인 애플리케이션 컴포넌트, 라우팅 설정
+├─ App.css                # 앱 기본 스타일
 ├─ main.jsx               # 애플리케이션 진입점
+├─ index.css              # 전역 스타일
+├─ assets/                # 정적 자원
+│  ├─ fonts/              # 폰트 파일
+│  │  ├─ pretendard/      # Pretendard 폰트
+│  │  └─ seoulnamsan/     # SeoulNamsan 폰트
+│  ├─ images/             # 이미지 파일
+│  │  ├─ icons/           # 아이콘 이미지
+│  │  └─ logos/           # 로고 이미지
+│  └─ styles/             # 스타일 파일
+│     ├─ colors.css       # 색상 변수 및 클래스
+│     ├─ font.css         # 폰트 정의 및 타이포그래피
+│     └─ global.css       # 전역 스타일 및 레이아웃
 ├─ components/            # 재사용 가능한 UI 컴포넌트
 │  ├─ auth/               # 인증 관련 컴포넌트
 │  │  └─ LoginForm.jsx    # 로그인 폼 컴포넌트
+│  ├─ common/             # 공통 UI 컴포넌트
+│  │  ├─ Button.jsx       # 버튼 컴포넌트
+│  │  └─ Input.jsx        # 입력 필드 컴포넌트
 │  ├─ layout/             # 레이아웃 관련 컴포넌트
 │  │  └─ Header.jsx       # 헤더 컴포넌트
 │  └─ map/                # 지도 관련 컴포넌트
-│     └─ NaverMap.jsx     # 네이버 지도 컴포넌트
+│     ├─ NaverMap.jsx     # 네이버 지도 컴포넌트
+│     ├─ CameraDropdown.jsx # 카메라 선택 드롭다운
+│     └─ CameraDetailsPanel.jsx # 카메라 상세 정보 패널
 ├─ context/               # React Context API
 │  └─ AuthContext.jsx     # 인증 상태 관리 컨텍스트
 ├─ hooks/                 # 커스텀 React Hooks
@@ -40,7 +58,8 @@ src/
 ├─ services/              # API 서비스 함수
 │  └─ authService.js      # 인증 관련 API 서비스
 └─ utils/                 # 유틸리티 함수
-   └─ NaverMapData.js     # 지도 데이터 생성 유틸리티
+   ├─ NaverMapData.js     # 지도 데이터 생성 유틸리티
+   └─ CameraData.js       # 카메라 데이터 관리 유틸리티
 ```
 
 ### 주요 파일 설명
@@ -49,11 +68,19 @@ src/
 
 - **App.jsx**: 애플리케이션의 라우팅 설정 및 전역 상태 관리를 담당합니다.
 - **NaverMap.jsx**: 네이버 지도 API를 초기화하고 실시간 데이터를 가져와 표시합니다.
+- **CameraDetailsPanel.jsx**: 선택된 카메라의 상세 정보 및 충돌 예측 로그를 표시합니다.
 - **AuthContext.jsx**: 사용자 인증 상태를 전역적으로 관리하는 Context API 구현체입니다.
+
+#### 스타일링 시스템
+
+- **colors.css**: 브랜드 색상 시스템 정의 및 색상 유틸리티 클래스를 제공합니다.
+- **font.css**: 커스텀 폰트 및 타이포그래피 시스템을 정의합니다.
+- **global.css**: 전체 레이아웃 및 공통 스타일을 정의합니다.
 
 #### 데이터 관련
 
 - **NaverMapData.js**: 차량 충돌 예측 시스템의 API 응답을 시뮬레이션하는 샘플 데이터를 생성합니다. GeoJSON 형식으로 차량, 충돌, 경로 정보를 제공합니다.
+- **CameraData.js**: 카메라 정보를 관리하고 가상 API 호출을 시뮬레이션합니다.
 - **authService.js**: 백엔드 API와 통신하여 인증 관련 기능을 처리합니다. 현재는 모의 데이터로 구현되어 있습니다.
 
 ## 개발 환경 설정

@@ -99,7 +99,7 @@ const NaverMap = ({ selectedCameraId, cameras, onPanelStateChange }) => {
           scaleControl: false, // 축척 컨트롤 제거
           logoControl: true, // 로고는 유지 (법적 요구사항)
           mapDataControl: false, // 데이터 저작권 컨트롤 제거
-          zoomControl: true, // 줌 컨트롤 활성화
+          zoomControl: false, // 줌 컨트롤 비활성화
         };
 
         const map = new window.naver.maps.Map(mapRef.current, mapOptions);
