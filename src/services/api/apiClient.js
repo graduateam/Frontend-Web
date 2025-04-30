@@ -36,6 +36,12 @@ async function apiRequest(endpoint, options = {}) {
   };
 
   try {
+    // API 요청 실행 전 로깅
+    console.log(
+      `[API] ${options.method || "GET"} ${endpoint} 요청 시작`,
+      requestOptions
+    );
+
     // API 요청 실행
     const response = await fetch(url, requestOptions);
 
@@ -57,16 +63,33 @@ async function apiRequest(endpoint, options = {}) {
         errorData = { message: response.statusText };
       }
 
-      const error = new Error(errorData.message || "서버 요청 실패");
-      error.status = response.status;
-      error.data = errorData;
-      throw error;
+      // API 스펙에 맞는 오류 형식 처리
+      if (errorData.error && errorData.error.message) {
+        const error = new Error(errorData.error.message);
+        error.status = response.status;
+        error.code = errorData.error.code;
+        error.data = errorData;
+        throw error;
+      } else {
+        const error = new Error(errorData.message || "서버 요청 실패");
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
+      }
     }
 
     // 응답 데이터가 있으면 JSON으로 변환하여 반환
     if (response.status !== 204) {
       // 204 No Content
-      return await response.json();
+      const jsonResponse = await response.json();
+
+      // 새로운 API 응답 형식 처리 (success, data, message)
+      if (jsonResponse.hasOwnProperty("success")) {
+        return jsonResponse;
+      }
+
+      // 기존 응답 형식 처리
+      return jsonResponse;
     }
 
     // 204 응답의 경우 성공만 반환

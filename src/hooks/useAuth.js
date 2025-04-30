@@ -13,7 +13,16 @@ const useAuth = () => {
   const login = async (credentials) => {
     try {
       const response = await loginService(credentials);
-      auth.updateAuthState(true, response.user);
+      // 새 API 응답 구조 확인
+      if (response.hasOwnProperty("user")) {
+        // 기존 응답 형식
+        auth.updateAuthState(true, response.user);
+        return response;
+      } else if (response.data && response.data.user) {
+        // 새로운 API 응답 형식
+        auth.updateAuthState(true, response.data.user);
+        return response.data;
+      }
       return response;
     } catch (error) {
       console.error("Login error:", error);

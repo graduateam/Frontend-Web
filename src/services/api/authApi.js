@@ -20,7 +20,14 @@ const AUTH_ENDPOINTS = {
  */
 export const login = async (credentials) => {
   try {
-    return await api.post(AUTH_ENDPOINTS.LOGIN, credentials);
+    const response = await api.post(AUTH_ENDPOINTS.LOGIN, credentials);
+
+    // API 응답 구조 확인 후 처리
+    if (response.success) {
+      return response.data; // 새로운 API 응답 구조
+    } else {
+      throw new Error(response.error?.message || "로그인 실패");
+    }
   } catch (error) {
     console.error("[Auth API] 로그인 실패:", error);
     throw error;
@@ -33,7 +40,8 @@ export const login = async (credentials) => {
  */
 export const logout = async () => {
   try {
-    return await api.post(AUTH_ENDPOINTS.LOGOUT);
+    const response = await api.post(AUTH_ENDPOINTS.LOGOUT);
+    return response;
   } catch (error) {
     console.error("[Auth API] 로그아웃 실패:", error);
     // 로그아웃은 실패해도 무시하고 로컬에서는 세션 정리
@@ -47,7 +55,8 @@ export const logout = async () => {
  */
 export const getUserProfile = async () => {
   try {
-    return await api.get(AUTH_ENDPOINTS.PROFILE);
+    const response = await api.get(AUTH_ENDPOINTS.PROFILE);
+    return response.data;
   } catch (error) {
     console.error("[Auth API] 프로필 조회 실패:", error);
     throw error;
@@ -60,7 +69,8 @@ export const getUserProfile = async () => {
  */
 export const refreshToken = async () => {
   try {
-    return await api.post(AUTH_ENDPOINTS.REFRESH_TOKEN);
+    const response = await api.post(AUTH_ENDPOINTS.REFRESH_TOKEN);
+    return response.data;
   } catch (error) {
     console.error("[Auth API] 토큰 갱신 실패:", error);
     throw error;

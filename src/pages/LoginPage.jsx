@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/layout/Header";
 import LoginForm from "../components/auth/LoginForm";
 import useAuth from "../hooks/useAuth";
@@ -8,6 +8,7 @@ import RoadIntersectionLogo from "@/assets/images/logos/road-intersection.svg";
 
 const LoginPage = () => {
   const { isAuthenticated, login } = useAuth();
+  const [error, setError] = useState("");
 
   if (isAuthenticated) {
     return <Navigate to="/main" />;
@@ -15,9 +16,15 @@ const LoginPage = () => {
 
   const handleLogin = async (credentials) => {
     try {
+      setError(""); // 이전 에러 메시지 초기화
       await login(credentials);
+      // 로그인 성공 시 useAuth 내부에서 상태가 변경되어 자동으로 Navigate로 리디렉션됨
     } catch (error) {
-      alert("로그인 실패: " + error.message);
+      // 오류 메시지 표시
+      setError(
+        error.message || "로그인 실패: 아이디와 비밀번호를 확인해주세요."
+      );
+      alert(error.message || "로그인 실패: 아이디와 비밀번호를 확인해주세요.");
     }
   };
 
@@ -38,6 +45,7 @@ const LoginPage = () => {
           />
         </div>
         <LoginForm onSubmit={handleLogin} />
+        {error && <div className="error-message text-white mt-2">{error}</div>}
         <div className="version-tag text-white pretendard-16-bold">V1.0</div>
       </div>
     </div>

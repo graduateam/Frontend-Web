@@ -17,40 +17,27 @@ const USER_KEY = "smart_road_reflector_user";
  */
 export const login = async (credentials) => {
   try {
-    // 개발 환경이거나 VITE_USE_REAL_API가 명시적으로 'true'가 아닐 때 모의 로그인 사용
-    const useRealApi = import.meta.env.VITE_USE_REAL_API === "true";
+    console.log("[Auth] API 로그인 시도:", credentials.username);
 
-    // 모의 로그인 사용 (기본 동작)
-    if (!useRealApi) {
-      console.log("[Auth] 모의 로그인 사용");
-      if (
-        credentials.username === "admin" &&
-        credentials.password === "password"
-      ) {
-        const mockData = {
-          token: "mock-jwt-token",
-          user: {
-            id: 1,
-            username: credentials.username,
-            role: "ADMIN",
-          },
-        };
-        localStorage.setItem(TOKEN_KEY, mockData.token);
-        localStorage.setItem(USER_KEY, JSON.stringify(mockData.user));
-        return mockData;
-      } else {
-        throw new Error("Invalid credentials");
-      }
-    }
-    // 실제 API 사용
-    else {
-      console.log("[Auth] 실제 API 로그인 시도");
-      const response = await authApi.login(credentials);
+    // API 호출을 통한 로그인 시도
+    const response = await authApi.login(credentials);
+    console.log("[Auth] API 로그인 응답:", response);
 
+    // 토큰과 사용자 정보 저장
+    if (response.success && response.data) {
+      localStorage.setItem(TOKEN_KEY, response.data.token);
+      localStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
+      console.log("[Auth] 로그인 성공, 토큰 저장됨");
+      return response.data;
+    } else if (response.token) {
+      // 구 형식 API 응답 처리
       localStorage.setItem(TOKEN_KEY, response.token);
       localStorage.setItem(USER_KEY, JSON.stringify(response.user));
-
+      console.log("[Auth] 로그인 성공, 토큰 저장됨 (구 형식)");
       return response;
+    } else {
+      console.error("[Auth] 잘못된 응답 형식:", response);
+      throw new Error("서버 응답 형식이 잘못되었습니다");
     }
   } catch (error) {
     console.error("Login error:", error);
@@ -62,6 +49,14 @@ export const login = async (credentials) => {
  * 사용자 로그아웃
  */
 export const logout = () => {
+  // 실제 API 호출 (비동기)
+  const useRealApi = import.meta.env.VITE_USE_REAL_API !== "false";
+  if (useRealApi) {
+    authApi.logout().catch((error) => {
+      console.warn("[Auth] 로그아웃 API 호출 실패:", error);
+    });
+  }
+
   // 로컬 스토리지에서 인증 정보 제거
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
