@@ -17,7 +17,10 @@ const CAMERA_ENDPOINTS = {
  */
 export const getAllCameras = async () => {
   try {
-    return await api.get(CAMERA_ENDPOINTS.GET_ALL);
+    console.log("[Camera API] 백엔드에서 카메라 목록 조회 요청");
+    const response = await api.get(CAMERA_ENDPOINTS.GET_ALL);
+    console.log("[Camera API] 백엔드에서 카메라 목록 조회 성공:", response.data);
+    return response.data;
   } catch (error) {
     console.error("[Camera API] 카메라 목록 조회 실패:", error);
     throw error;
